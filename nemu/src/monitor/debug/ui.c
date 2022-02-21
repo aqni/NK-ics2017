@@ -138,13 +138,10 @@ static int cmd_p(char *args){
 
 static int cmd_x(char *args){
   /* extract the first argument */
-  printf("%s\n",args);
   char *n_arg=strtok(args," ");
-  printf("%s\n",args);
   char *expr_arg=strtok(NULL," ");
-  printf("%s\n",expr_arg);
   int N=atoi(n_arg);
-  uint32_t expr=atoi(expr_arg);
+  uint32_t expr=strtol(expr_arg,NULL,16);
   printf("%d\n",expr);
   if(N==0||expr==0){
     printf("Unknown command args, '%s'\n", args);
