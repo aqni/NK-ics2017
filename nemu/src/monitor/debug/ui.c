@@ -140,6 +140,7 @@ static int cmd_x(char *args){
   /* extract the first argument */
   printf("%s\n",args);
   char *n_arg=strtok(args," ");
+  printf("%s\n",args);
   char *expr_arg=strtok(NULL," ");
   int N=atoi(n_arg);
   uint32_t expr=atoi(expr_arg);
