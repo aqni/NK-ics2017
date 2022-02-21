@@ -28,7 +28,7 @@ char* rl_gets() {
 }
 
 static int cmd_c(char *args) {
-  cpu_exec(-1);
+  cpu_exec(-1); /* -1 -> UINTN_MAX */
   return 0;
 }
 
@@ -37,6 +37,18 @@ static int cmd_q(char *args) {
 }
 
 static int cmd_help(char *args);
+
+static int cmd_si(char *args);
+
+static int cmd_info(char *args);
+
+static int cmd_p(char *args);
+
+static int cmd_x(char *args);
+
+static int cmd_w(char *args);
+
+static int cmd_d(char *args);
 
 static struct {
   char *name;
@@ -48,14 +60,19 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
-
+  { "si", "'si [N=1]', Let the program pause execution after stepping through N instructions. When N is not given, the default is 1.", cmd_si},
+  { "info", "'info <r|w>', Prints specified information (registers or watchpoints).", cmd_info },
+  { "p", "'p <EXPR>', Print the value of expression <EXPR>.", cmd_p },
+  { "x", "'x <N> <EXPR>', Dump N 4-bytes start from memory address <EXPR>.", cmd_x },
+  { "w", "'w <EXPR>', Watch the expression <EXPR>.", cmd_w },
+  { "d", "'d <N>', Delete the watchpoint with sequence number N.", cmd_d }, 
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
 
 static int cmd_help(char *args) {
   /* extract the first argument */
-  char *arg = strtok(NULL, " ");
+  char *arg = strtok(args, " ");
   int i;
 
   if (arg == NULL) {
@@ -73,6 +90,76 @@ static int cmd_help(char *args) {
     }
     printf("Unknown command '%s'\n", arg);
   }
+  return 0;
+}
+
+static int cmd_si(char *args){
+  /* extract the first argument */
+  char *arg=strtok(args," ");
+  int n=1;
+  if (arg != NULL) {
+    n=atoi(arg);
+    if(n<=0){
+      printf("Unknown command args,'%s',(format is 'si [n=1]',n must more than 0)\n", arg);
+      return 0;
+    }
+  }
+  cpu_exec(n);
+  return 0; 
+}
+
+static int cmd_info(char *args){
+  /* extract the first argument */
+  char *arg=strtok(args," ");
+  if(strlen(arg)==1){
+    switch(*arg){
+      case 'r':
+        /* global var 'cpu' */
+        for(int i=0;i<sizeof(cpu.gpr)/sizeof(*cpu.gpr);i++){
+            printf("%s\t\t0x%08X\n", regsl[i], cpu.gpr[i]._32);
+        }
+        printf("eip\t\t0x%08X\n",cpu.eip);
+        return 0;
+      case 'w':
+        /* global var 'head'*/
+        panic("unimplemented!\n");
+        return 0;
+      default: break;
+    }
+  }
+  printf("Unknown command args, '%s'\n", args);
+  return 0;
+}
+
+static int cmd_p(char *args){
+  panic("unimplemented!\n"); 
+  return 0;
+}
+
+static int cmd_x(char *args){
+  /* extract the first argument */
+  char *n_arg=strtok(args," ");
+  char *expr_arg=strtok(NULL," ");
+  int N=atoi(n_arg);
+  uint32_t expr=atoi(expr_arg);
+  if(N==0||expr==0){
+    printf("Unknown command args, '%s'\n", args);
+    return 0;
+  }
+  uint32_t addr =expr;
+  for(int i=0;i<4*N;i+=4,addr+=4){
+    printf("%#X <+%d>:\t\t0x%08X\n", addr, i, vaddr_read(addr,4));
+  }
+  return 0;
+}
+
+static int cmd_w(char *args){
+  panic("unimplemented!\n");
+  return 0; 
+}
+
+static int cmd_d(char *args){
+  panic("unimplemented!\n"); 
   return 0;
 }
 
