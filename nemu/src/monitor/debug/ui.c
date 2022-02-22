@@ -132,7 +132,15 @@ static int cmd_info(char *args){
 }
 
 static int cmd_p(char *args){
-  panic("unimplemented!\n"); 
+  if(args==NULL){
+    printf("Lack of arguments!\n");
+    return 0;
+  }
+  bool success=true;
+  int result=expr(args,&success);
+  if(success){
+    printf("\t%#X(%d)\n",result,result);
+  }
   return 0;
 }
 
