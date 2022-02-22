@@ -233,6 +233,7 @@ int eval(int lidx, int ridx, bool *success) {
       default: return *success=false;
       case TK_NUM:
         if(EOF==sscanf(tokens[lidx].str,"%i",&val)){
+          printf("unknow num:%s\n",tokens[lidx].str); 
           return *success=false;
         }
         return val;
