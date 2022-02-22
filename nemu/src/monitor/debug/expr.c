@@ -160,7 +160,7 @@ bool check_parentheses(int lidx,int ridx,bool *success){
   return (tokens[lidx].type=='(') && (tokens[ridx].type==')');
 }
 
-int prioity_of(int type){
+int priority_of(int type){
   switch(type){
     default: return -1;
     case TK_MINUS:
@@ -269,7 +269,8 @@ int eval(int lidx, int ridx, bool *success) {
       }
       if(inbracket) continue;
       
-      int curr_prio=prioity_of(tokens[i].type);
+      int curr_prio=priority_of(tokens[i].type);
+      printf("cmp %d %d",curr_prio,priority);
       if(curr_prio>=priority){
         op=i;
         priority=curr_prio;
