@@ -20,4 +20,60 @@ void init_wp_pool() {
 
 /* TODO: Implement the functionality of watchpoint */
 
+WP* new_wp(const char* expr_str){
+  if(free_ == NULL || strlen(expr_str)>=sizeof(head->expr_str)){
+    return NULL;
+  }
+  WP* temp=head;
+  head=free_;
+  head->next=temp;
+  free_=free_->next;
+
+  bool success=true;
+  head->old_value=expr(head->expr_str,&success);
+  if(!success) return NULL;
+
+  strcpy(head->expr_str,expr_str);
+  return head;
+}
+
+void free_wp(int no){
+  WP *curr=head, *last=NULL;
+  while(curr!=NULL && curr->NO!=no ) {
+    last=curr;
+    curr=curr->next;
+  }
+  if(curr==NULL) {
+    return;
+  }else if(curr == head){
+    head=curr->next;
+  }else{
+    last->next=curr->next;
+  }
+
+  curr->next=free_;
+  free_=curr;
+}
+
+int print_wps(bool check_change){
+  int print_num=0;
+  for(WP* curr=head;curr!=NULL;curr=curr->next){
+    if(!check_change){
+      printf("%d\t%s\t\t\t= %d\n",curr->NO,curr->expr_str,curr->old_value);
+      print_num++;
+    }else{
+      bool success=true;
+      int new_value=expr(curr->expr_str, &success);
+      assert(success);
+      if(new_value!=curr->old_value){
+        printf("%d\t%s\t\t\t= %d -> %d\n",curr->NO,curr->expr_str,
+          curr->old_value,new_value);
+        curr->old_value=new_value;
+        print_num++;
+      }
+    }
+  }
+  return print_num;
+}
+
 

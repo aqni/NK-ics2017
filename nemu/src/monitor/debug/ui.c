@@ -163,12 +163,29 @@ static int cmd_x(char *args){
 }
 
 static int cmd_w(char *args){
-  panic("unimplemented!\n");
-  return 0; 
+  if(args==NULL){
+    printf("Lack of arguments!\n");
+  }
+  WP* wp=new_wp(args);
+  if(wp==NULL){
+    printf("Fail to set watchpoints!\n");
+  }else{
+    printf("Create %d watchpoint on %s\n",wp->NO,args);
+  }
+  return 0;
 }
 
 static int cmd_d(char *args){
-  panic("unimplemented!\n"); 
+  if(args==NULL){
+    printf("Lack of arguments!\n");
+  }
+  int no;
+  if(EOF==sscanf(args,"%i",&no)){
+    printf("Need a number!\n"); 
+    return 0;
+  }
+  free_wp(no);
+  printf("delete watchpoint %d!\n",no); 
   return 0;
 }
 
