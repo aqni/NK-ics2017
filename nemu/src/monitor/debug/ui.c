@@ -122,7 +122,7 @@ static int cmd_info(char *args){
         return 0;
       case 'w':
         /* global var 'head'*/
-        panic("unimplemented!\n");
+        print_wps(false);
         return 0;
       default: break;
     }
