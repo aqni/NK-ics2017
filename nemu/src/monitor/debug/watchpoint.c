@@ -26,8 +26,8 @@ WP* new_wp(const char* expr_str){
   }
 
   bool success=true;
-  printf("expr:%s\n",head->expr_str);
-  int value=expr(head->expr_str,&success);
+  printf("expr:%s\n",expr_str);
+  int value=expr(expr_str,&success);
   if(!success) return NULL;
 
   WP* temp=head;
