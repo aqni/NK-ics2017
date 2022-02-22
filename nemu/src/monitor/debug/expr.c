@@ -279,7 +279,7 @@ int eval(int lidx, int ridx, bool *success) {
     if(priority<0 ||(operands_num_of(tokens[op].type)<2 && op==lidx)){
       return *success=false;
     }
-
+    printf("op = %d\n",op);
     /* return the value */
 
 #define EVAL_VAL1 (eval(lidx, op - 1, success))
