@@ -217,6 +217,7 @@ int operands_num_of(int type){
 }
 
 int eval(int lidx, int ridx, bool *success) {
+  printf("success = %d\n",*success);
   if (lidx > ridx) {
     /* Bad expression */
 
