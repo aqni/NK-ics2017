@@ -284,6 +284,7 @@ int eval(int lidx, int ridx, bool *success) {
 
 #define EVAL_VAL1 (eval(lidx, op - 1, success))
 #define EVAL_VAL2 (eval(op + 1, ridx, success))
+    printf("token.type = %d\n",tokens[op].type);
     switch (tokens[op].type) {
       default: return *success=false;
       case TK_MINUS: return - EVAL_VAL2;
