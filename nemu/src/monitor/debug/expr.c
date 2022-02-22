@@ -152,12 +152,13 @@ bool check_parentheses(int lidx,int ridx,bool *success){
       lb--;
     }
   }
-  if(lb!=0||ridx-lidx<2){
+  bool result=(tokens[lidx].type=='(') && (tokens[ridx].type==')');
+  if(lb!=0||(result&&ridx-lidx<2)){
     printf("lb ridx lidx %d %d %d\n",lb,ridx,lidx);
     return *success=false;
   }
   printf("check praentheses success = %d\n",*success);
-  return (tokens[lidx].type=='(') && (tokens[ridx].type==')');
+  return result;
 }
 
 int priority_of(int type){
