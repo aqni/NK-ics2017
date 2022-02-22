@@ -228,6 +228,7 @@ int eval(int lidx, int ridx, bool *success) {
      * Return the value of the number.
      */
 printf("lidx token.type = %d\n",tokens[lidx].type);
+printf("success = %d\n",*success);
     int val=0;
     switch(tokens[lidx].type){
       default: return *success=false;
