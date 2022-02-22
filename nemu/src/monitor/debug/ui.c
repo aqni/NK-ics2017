@@ -116,7 +116,7 @@ static int cmd_info(char *args){
       case 'r':
         /* global var 'cpu' */
         for(int i=0;i<sizeof(cpu.gpr)/sizeof(*cpu.gpr);i++){
-            printf("%s\t\t0x%08X\n", regsl[i], cpu.gpr[i]._32);
+            printf("%s\t\t0x%08X\t%d\n", regsl[i], cpu.gpr[i]._32,cpu.gpr[i]._32);
         }
         printf("eip\t\t0x%08X\n",cpu.eip);
         return 0;
@@ -139,7 +139,7 @@ static int cmd_p(char *args){
   bool success=true;
   int result=expr(args,&success);
   if(success){
-    printf("\t%#X(%d)\n",result,result);
+    printf("%#X(%d)\n",result,result);
   }
   return 0;
 }

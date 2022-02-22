@@ -26,7 +26,7 @@ static struct rule {
   {" +", TK_NOTYPE},    // spaces
 
   {"([1-9][0-9]*)|(0[0-7]+)|(0x[0-9A-Fa-f]+)|0", TK_NUM},
-  {"\\$(eax|ebx|ecx|edx|esp|ebp|esi|edi|eip)", TK_REG},
+  {"\\$(eax|ecx|edx|ebx|esp|ebp|esi|edi|eip)", TK_REG},
   {"\\(", '('},
   {"\\)", ')'},
 
@@ -236,13 +236,16 @@ int eval(int lidx, int ridx, bool *success) {
           return *success=false;
         }
         return val;
-      case TK_REG:
+      case TK_REG: 
+        if(0==strcmp(tokens[lidx].str+1,"eip")){
+          return cpu.eip;
+        }
         for(int i=0;i<8;i++){
           if(0==strcmp(tokens[lidx].str+1,regsl[i])){
-            
             return cpu.gpr[i]._32;
           }
         }
+
         assert(0);
     }
     return 0;
