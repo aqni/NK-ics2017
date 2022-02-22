@@ -152,13 +152,11 @@ bool check_parentheses(int lidx,int ridx,bool *success){
       lb--;
     }
   }
-  bool result=(tokens[lidx].type=='(') && (tokens[ridx].type==')');
-  if(lb!=0||(result&&ridx-lidx<2)){
-    printf("lb ridx lidx %d %d %d\n",lb,ridx,lidx);
+  if(lb!=0){
+    printf("unmatched parentheses!\n");
     return *success=false;
   }
-  printf("check praentheses success = %d\n",*success);
-  return result;
+  return (tokens[lidx].type=='(') && (tokens[ridx].type==')');
 }
 
 int priority_of(int type){
@@ -218,10 +216,9 @@ int operands_num_of(int type){
 }
 
 int eval(int lidx, int ridx, bool *success) {
-  printf("success = %d\n",*success);
   if (lidx > ridx) {
     /* Bad expression */
-
+    printf("Bad expression!\n");
     return *success=false;
   }
   else if (lidx == ridx) {
@@ -229,8 +226,6 @@ int eval(int lidx, int ridx, bool *success) {
      * For now this token should be a number.
      * Return the value of the number.
      */
-printf("lidx token.type = %d\n",tokens[lidx].type);
-printf("success = %d\n",*success);
     int val=0;
     switch(tokens[lidx].type){
       default: return *success=false;
@@ -276,7 +271,6 @@ printf("success = %d\n",*success);
       if(inbracket) continue;
       
       int curr_prio=priority_of(tokens[i].type);
-      printf("cmp %d %d\n",curr_prio,priority);
       if(curr_prio>=priority){
         op=i;
         priority=curr_prio;
@@ -287,9 +281,7 @@ printf("success = %d\n",*success);
       printf("Bad expression!\n"); 
       return *success=false;
     }
-    printf("op = %d\n",op);
     /* return the value */
-    printf("success = %d\n",*success);
 
 #define EVAL_VAL1 (eval(lidx, op - 1, success))
 #define EVAL_VAL2 (eval(op + 1, ridx, success))
