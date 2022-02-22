@@ -238,6 +238,7 @@ int eval(int lidx, int ridx, bool *success) {
       case TK_REG:
         for(int i=0;i<sizeof(cpu.gpr)/sizeof(cpu.gpr[0]);i++){
           if(0==strcmp(tokens[lidx].str+1,regsl[i])){
+            printf("cmp %s %s",tokens[lidx].str+1,regsl[i]);
             return cpu.gpr[i]._32;
           }
         }
