@@ -234,8 +234,6 @@ int eval(int lidx, int ridx, bool *success) {
           printf("unknow num:%s\n",tokens[lidx].str); 
           return *success=false;
         }
-        printf("num = %d\n",val);
-        printf("success = %d\n",*success);
         return val;
       case TK_REG: 
         if(0==strcmp(tokens[lidx].str+1,"eip")){
@@ -246,7 +244,6 @@ int eval(int lidx, int ridx, bool *success) {
             return cpu.gpr[i]._32;
           }
         }
-
         assert(0);
     }
     return 0;
@@ -285,7 +282,6 @@ int eval(int lidx, int ridx, bool *success) {
 
 #define EVAL_VAL1 (eval(lidx, op - 1, success))
 #define EVAL_VAL2 (eval(op + 1, ridx, success))
-    printf("token.type = %d\n",tokens[op].type);
     switch (tokens[op].type) {
       default: return *success=false;
       case TK_MINUS: return - EVAL_VAL2;
