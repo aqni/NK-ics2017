@@ -286,6 +286,7 @@ printf("lidx token.type = %d\n",tokens[lidx].type);
     }
     printf("op = %d\n",op);
     /* return the value */
+    printf("success = %d\n",*success);
 
 #define EVAL_VAL1 (eval(lidx, op - 1, success))
 #define EVAL_VAL2 (eval(op + 1, ridx, success))
