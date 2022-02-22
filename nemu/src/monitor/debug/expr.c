@@ -19,7 +19,7 @@ static struct rule {
   int token_type;
 } rules[] = {
 
-  /* TODO: Add more rules.
+  /* DONE: Add more rules.
    * Pay attention to the precedence level of different rules.
    */
 
@@ -102,7 +102,7 @@ static bool make_token(const char *e) {
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
         position += substr_len;
 
-        /* TODO: Now a new token is recognized with rules[i]. Add codes
+        /* DONE: Now a new token is recognized with rules[i]. Add codes
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */

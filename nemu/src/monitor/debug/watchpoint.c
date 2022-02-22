@@ -18,7 +18,7 @@ void init_wp_pool() {
   free_ = wp_pool;
 }
 
-/* TODO: Implement the functionality of watchpoint */
+/* DONE: Implement the functionality of watchpoint */
 
 WP* new_wp(const char* expr_str){
   if(free_ == NULL || strlen(expr_str)>=sizeof(head->expr_str)){

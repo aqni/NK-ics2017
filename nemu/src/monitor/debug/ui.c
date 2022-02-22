@@ -59,7 +59,7 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
 
-  /* TODO: Add more commands */
+  /* DONE: Add more commands */
   { "si", "'si [N=1]', Let the program pause execution after stepping through N instructions. When N is not given, the default is 1.", cmd_si},
   { "info", "'info <r|w>', Prints specified information (registers or watchpoints).", cmd_info },
   { "p", "'p <EXPR>', Print the value of expression <EXPR>.", cmd_p },
@@ -170,7 +170,7 @@ static int cmd_w(char *args){
   if(wp==NULL){
     printf("Fail to set watchpoints!\n");
   }else{
-    printf("Create %d watchpoint on %s\n",wp->NO,args);
+    printf("Create watchpoint %d on %s\n",wp->NO,args);
   }
   return 0;
 }
