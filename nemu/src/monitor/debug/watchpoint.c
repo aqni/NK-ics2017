@@ -24,15 +24,18 @@ WP* new_wp(const char* expr_str){
   if(free_ == NULL || strlen(expr_str)>=sizeof(head->expr_str)){
     return NULL;
   }
+
+  bool success=true;
+  printf("expr:%s\n",head->expr_str);
+  int value=expr(head->expr_str,&success);
+  if(!success) return NULL;
+
   WP* temp=head;
   head=free_;
   head->next=temp;
   free_=free_->next;
 
-  bool success=true;
-  head->old_value=expr(head->expr_str,&success);
-  if(!success) return NULL;
-
+  head->old_value=value;
   strcpy(head->expr_str,expr_str);
   return head;
 }
