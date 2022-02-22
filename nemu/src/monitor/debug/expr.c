@@ -156,7 +156,7 @@ bool check_parentheses(int lidx,int ridx,bool *success){
     *success=false;
     return false;
   }
-  
+  printf("check praentheses success = %d\n",*success);
   return (tokens[lidx].type=='(') && (tokens[ridx].type==')');
 }
 
