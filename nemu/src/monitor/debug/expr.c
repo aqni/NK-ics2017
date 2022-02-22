@@ -237,6 +237,7 @@ printf("lidx token.type = %d\n",tokens[lidx].type);
           return *success=false;
         }
         printf("num = %d\n",val);
+        printf("success = %d\n",*success);
         return val;
       case TK_REG: 
         if(0==strcmp(tokens[lidx].str+1,"eip")){
