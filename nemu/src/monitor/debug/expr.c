@@ -270,6 +270,7 @@ int eval(int lidx, int ridx, bool *success) {
       if(inbracket) continue;
       
       int curr_prio=priority_of(tokens[i].type);
+      printf("cmp %d %d\n",curr_prio,priority);
       if(curr_prio>=priority){
         op=i;
         priority=curr_prio;
@@ -277,12 +278,15 @@ int eval(int lidx, int ridx, bool *success) {
     }
     assert(!inbracket);
     if(priority<0 ||(operands_num_of(tokens[op].type)<2 && op!=lidx)){
+      printf("Bad expression!\n"); 
       return *success=false;
     }
+    printf("op = %d\n",op);
     /* return the value */
 
 #define EVAL_VAL1 (eval(lidx, op - 1, success))
 #define EVAL_VAL2 (eval(op + 1, ridx, success))
+    printf("token.type = %d\n",tokens[op].type);
     switch (tokens[op].type) {
       default: return *success=false;
       case TK_MINUS: return - EVAL_VAL2;
