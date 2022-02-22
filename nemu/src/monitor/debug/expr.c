@@ -153,8 +153,8 @@ bool check_parentheses(int lidx,int ridx,bool *success){
     }
   }
   if(lb!=0||ridx-lidx<2){
-    *success=false;
-    return false;
+    printf("lb ridx lidx %d %d %d\n",lb,ridx,lidx);
+    return *success=false;
   }
   printf("check praentheses success = %d\n",*success);
   return (tokens[lidx].type=='(') && (tokens[ridx].type==')');
