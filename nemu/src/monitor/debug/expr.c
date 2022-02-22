@@ -115,7 +115,8 @@ static bool make_token(char *e) {
         switch (rules[i].token_type) {
           case TK_NOTYPE:
             break;
-          /*has str*/
+          case TK_REG:
+          case TK_NUM:
             if(substr_len >= sizeof(tokens->str)-1){
               printf("Token string is too large (up to %d bytes))!",substr_len);
               return false;
@@ -236,9 +237,7 @@ int eval(int lidx, int ridx, bool *success) {
         }
         return val;
       case TK_REG:
-        printf("cmp %s\n",tokens[lidx].str+1);
         for(int i=0;i<8;i++){
-          printf("cmp %s %s",tokens[lidx].str+1,regsl[i]);
           if(0==strcmp(tokens[lidx].str+1,regsl[i])){
             
             return cpu.gpr[i]._32;
