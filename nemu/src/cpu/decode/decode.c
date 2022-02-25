@@ -40,8 +40,8 @@ static inline make_DopHelper(SI) {
    */
   if(op->width == 4) { /* operand_size ==32 */
     op->simm=instr_fetch(eip,4);
-  }else{
-    TODO();
+  }else { /* operand_size ==8 */
+    op->simm=(int8_t)(uint8_t)instr_fetch(eip,1);
   }
 
   rtl_li(&op->val, op->simm);
