@@ -28,7 +28,7 @@ char* rl_gets() {
 }
 
 static int cmd_c(char *args) {
-  cpu_exec(-1);
+  cpu_exec(-1); /* -1 -> UINTN_MAX */
   return 0;
 }
 
@@ -37,6 +37,18 @@ static int cmd_q(char *args) {
 }
 
 static int cmd_help(char *args);
+
+static int cmd_si(char *args);
+
+static int cmd_info(char *args);
+
+static int cmd_p(char *args);
+
+static int cmd_x(char *args);
+
+static int cmd_w(char *args);
+
+static int cmd_d(char *args);
 
 static struct {
   char *name;
@@ -47,21 +59,26 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
 
-  /* TODO: Add more commands */
-
+  /* DONE: Add more commands */
+  { "si", "'si [N=1]', Let the program pause execution after stepping through N instructions. When N is not given, the default is 1.", cmd_si},
+  { "info", "'info <r|w>', Prints specified information (registers or watchpoints).", cmd_info },
+  { "p", "'p <EXPR>', Print the value of expression <EXPR>.", cmd_p },
+  { "x", "'x <N> <EXPR>', Dump N 4-bytes start from memory address <EXPR>.", cmd_x },
+  { "w", "'w <EXPR>', Watch the expression <EXPR>.", cmd_w },
+  { "d", "'d <N>', Delete the watchpoint with sequence number N.", cmd_d }, 
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
 
 static int cmd_help(char *args) {
   /* extract the first argument */
-  char *arg = strtok(NULL, " ");
+  char *arg = strtok(args, " ");
   int i;
 
   if (arg == NULL) {
     /* no argument given */
     for (i = 0; i < NR_CMD; i ++) {
-      printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
+      printf("%s \t- %s\n", cmd_table[i].name, cmd_table[i].description);
     }
   }
   else {
@@ -73,6 +90,102 @@ static int cmd_help(char *args) {
     }
     printf("Unknown command '%s'\n", arg);
   }
+  return 0;
+}
+
+static int cmd_si(char *args){
+  /* extract the first argument */
+  char *arg=strtok(args," ");
+  int n=1;
+  if (arg != NULL) {
+    n=atoi(arg);
+    if(n<=0){
+      printf("Unknown command args,'%s',(format is 'si [n=1]',n must more than 0)\n", arg);
+      return 0;
+    }
+  }
+  cpu_exec(n);
+  return 0; 
+}
+
+static int cmd_info(char *args){
+  /* extract the first argument */
+  char *arg=strtok(args," ");
+  if(strlen(arg)==1){
+    switch(*arg){
+      case 'r':
+        /* global var 'cpu' */
+        for(int i=0;i<sizeof(cpu.gpr)/sizeof(*cpu.gpr);i++){
+            printf("%s\t\t0x%08X\t%d\n", regsl[i], cpu.gpr[i]._32,cpu.gpr[i]._32);
+        }
+        printf("eip\t\t0x%08X\n",cpu.eip);
+        return 0;
+      case 'w':
+        /* global var 'head'*/
+        print_wps(false);
+        return 0;
+      default: break;
+    }
+  }
+  printf("Unknown command args, '%s'\n", args);
+  return 0;
+}
+
+static int cmd_p(char *args){
+  if(args==NULL){
+    printf("Lack of arguments!\n");
+    return 0;
+  }
+  bool success=true;
+  int result=expr(args,&success);
+  if(success){
+    printf("%#X(%d)\n",result,result);
+  }
+  return 0;
+}
+
+static int cmd_x(char *args){
+  /* extract the first argument */
+  char *n_arg=strtok(args," ");
+  char *expr_arg=strtok(NULL," ");
+  int N=atoi(n_arg);
+  uint32_t expr=strtol(expr_arg,NULL,16);
+  printf("%d\n",expr);
+  if(N==0||expr==0){
+    printf("Unknown command args, '%s'\n", args);
+    return 0;
+  }
+  uint32_t addr =expr;
+  for(int i=0;i<4*N;i+=4,addr+=4){
+    printf("%#X <+%d>:\t\t0x%08X\n", addr, i, vaddr_read(addr,4));
+  }
+  return 0;
+}
+
+static int cmd_w(char *args){
+  if(args==NULL){
+    printf("Lack of arguments!\n");
+  }
+  WP* wp=new_wp(args);
+  if(wp==NULL){
+    printf("Fail to set watchpoints!\n");
+  }else{
+    printf("Create watchpoint %d on %s\n",wp->NO,args);
+  }
+  return 0;
+}
+
+static int cmd_d(char *args){
+  if(args==NULL){
+    printf("Lack of arguments!\n");
+  }
+  int no;
+  if(EOF==sscanf(args,"%i",&no)){
+    printf("Need a number!\n"); 
+    return 0;
+  }
+  free_wp(no);
+  printf("delete watchpoint %d!\n",no); 
   return 0;
 }
 
