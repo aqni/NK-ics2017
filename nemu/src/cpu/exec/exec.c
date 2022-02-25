@@ -235,6 +235,8 @@ void exec_wrapper(bool print_flag) {
 #ifdef DEBUG
   int instr_len = decoding.seq_eip - cpu.eip;
   sprintf(decoding.p, "%*.s", 50 - (12 + 3 * instr_len), "");
+
+/* to avoid warnings in new and old compliers */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpragmas"
 #pragma GCC diagnostic ignored "-Wrestrict"
