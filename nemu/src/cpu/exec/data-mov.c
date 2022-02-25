@@ -6,7 +6,11 @@ make_EHelper(mov) {
 }
 
 make_EHelper(push) {
-  TODO();
+  if(id_dest->width==4){
+    rtl_push(&id_dest->val);
+  }else{
+    TODO();
+  }
 
   print_asm_template1(push);
 }
