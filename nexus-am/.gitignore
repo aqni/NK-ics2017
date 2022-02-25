@@ -11,3 +11,4 @@
 tags
 cscope.*
 build/
+!lib/klib/build/
