@@ -14,6 +14,7 @@ Makefile.%: tests/%.c latest
 	-@rm -f Makefile.$*
 
 run: all
+gdb: all
 
 clean: 
 	rm -rf Makefile.* build/
