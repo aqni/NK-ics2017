@@ -169,25 +169,27 @@ static inline void rtl_neq0(rtlreg_t* dest, const rtlreg_t* src1) {
 
 static inline void rtl_msb(rtlreg_t* dest, const rtlreg_t* src1, int width) {
   // dest <- src1[width * 8 - 1]
-  TODO();
+  *dest = 0x1 & (*src1 >> (width * 8-1));
 }
 
 static inline void rtl_update_ZF(const rtlreg_t* result, int width) {
   // eflags.ZF <- is_zero(result[width * 8 - 1 .. 0])
   rtlreg_t result_width;
   switch (width) {
-    case 4: result_width=*result&0xFFFFFFFF; break;
-    case 1: result_width=*result&0x000000FF; break;
-    case 2: result_width=*result&0x0000FFFF; break;
+    case 4: rtl_andi(&result_width,result,0xFFFFFFFF); break;
+    case 1: rtl_andi(&result_width,result,0xFF); break;
+    case 2: rtl_andi(&result_width,result,0xFFFF); break;
     default: assert(0);
   }
-  rtlreg_t zf=(0==result_width)?1:0;
+  rtlreg_t zf;
+  rtl_eq0(&zf,&result_width);
   rtl_set_ZF(&zf);
 }
 
 static inline void rtl_update_SF(const rtlreg_t* result, int width) {
   // eflags.SF <- is_sign(result[width * 8 - 1 .. 0])
-  rtlreg_t sf= 0x1 & (*result >> (width * 8-1));
+  rtlreg_t sf;
+  rtl_msb(&sf,result,width);
   rtl_set_SF(&sf);
 }
 
