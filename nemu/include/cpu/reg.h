@@ -35,6 +35,16 @@ typedef struct {
 
   vaddr_t eip;
 
+  union /* eflags */
+  {
+    rtlreg_t reg;
+    struct { /* Bit-Fields: https://www.cnblogs.com/axjlxy/p/15008070.html */
+      rtlreg_t CF:1, _1:1, PF:1, _3:1, AF:1, _5:1, ZF:1, SF:1, /* 1 - 7 */
+               TF:1, IF:1, DF:1, OF:1, IOPL:2,     NT:1, _f:1, /* 8 - 15 */
+               RF:1, VM:1, :0;                                 /* 16 -17 */
+    };
+  } eflags;
+
 } CPU_state;
 
 extern CPU_state cpu;
