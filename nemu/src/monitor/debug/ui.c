@@ -149,13 +149,12 @@ static int cmd_x(char *args){
   char *n_arg=strtok(args," ");
   char *expr_arg=strtok(NULL," ");
   int N=atoi(n_arg);
-  uint32_t expr=strtol(expr_arg,NULL,16);
-  printf("%d\n",expr);
-  if(N==0||expr==0){
+  bool success=success;
+  uint32_t addr=expr(expr_arg,&success);
+  if(N==0||!success){
     printf("Unknown command args, '%s'\n", args);
     return 0;
   }
-  uint32_t addr =expr;
   for(int i=0;i<4*N;i+=4,addr+=4){
     printf("%#X <+%d>:\t\t0x%08X\n", addr, i, vaddr_read(addr,4));
   }
