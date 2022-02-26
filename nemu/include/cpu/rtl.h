@@ -174,12 +174,21 @@ static inline void rtl_msb(rtlreg_t* dest, const rtlreg_t* src1, int width) {
 
 static inline void rtl_update_ZF(const rtlreg_t* result, int width) {
   // eflags.ZF <- is_zero(result[width * 8 - 1 .. 0])
-  TODO();
+  rtlreg_t result_width;
+  switch (width) {
+    case 4: result_width=*result&0xFFFFFFFF; break;
+    case 1: result_width=*result&0x000000FF; break;
+    case 2: result_width=*result&0x0000FFFF; break;
+    default: assert(0);
+  }
+  rtlreg_t zf=(0==result_width)?1:0;
+  rtl_set_ZF(&zf);
 }
 
 static inline void rtl_update_SF(const rtlreg_t* result, int width) {
   // eflags.SF <- is_sign(result[width * 8 - 1 .. 0])
-  TODO();
+  rtlreg_t sf= 0x1 & (*result >> (width * 8-1));
+  rtl_set_SF(&sf);
 }
 
 static inline void rtl_update_ZFSF(const rtlreg_t* result, int width) {
