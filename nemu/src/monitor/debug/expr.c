@@ -215,7 +215,7 @@ int operands_num_of(int type){
   }
 }
 
-int eval(int lidx, int ridx, bool *success) {
+uint32_t eval(int lidx, int ridx, bool *success) {
   if (lidx > ridx) {
     /* Bad expression */
     printf("Bad expression!\n");
@@ -226,7 +226,7 @@ int eval(int lidx, int ridx, bool *success) {
      * For now this token should be a number.
      * Return the value of the number.
      */
-    int val=0;
+    uint32_t val=0;
     switch(tokens[lidx].type){
       default: return *success=false;
       case TK_NUM:
@@ -312,7 +312,7 @@ int eval(int lidx, int ridx, bool *success) {
   }
 }
 
-int expr(const char *e, bool *success) {
+uint32_t expr(const char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
     return 0;
