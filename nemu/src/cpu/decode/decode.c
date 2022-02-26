@@ -10,6 +10,94 @@ const rtlreg_t tzero = 0;
 
 /* Refer to Appendix A in i386 manual for the explanations of these abbreviations */
 
+/* INTEL 80386 PROGRAMMER'S REFERENCE MANUAL 1986  Page 412 - 413.
+
+# Key to Abbreviations
+
+Operands are identified by a two-character code of the form Zz. The first
+character, an uppercase letter, specifies the addressing method; the second
+character, a lowercase letter, specifies the type of operand.
+
+# Codes for Addressing Method
+
+A   Direct address; the instruction has no modR/M byte; the address of the
+    operand is encoded in the instruction; no base register, index register,
+    or scaling factor can be applied; e.g., far JMP (EA).
+
+C   The reg field of the modR/M byte selects a control register; e.g., MOV
+    (0F20, 0F22).
+
+D   The reg field of the modR/M byte selects a debug register; e.g., MOV
+    (0F21,0F23).
+
+E   A modR/M byte follows the opcode and specifies the operand. The operand
+    is either a general register or a memory address. If it is a memory
+    address, the address is computed from a segment register and any of the
+    following values: a base register, an index register, a scaling factor,
+    a displacement.
+
+F   Flags Register.
+
+G   The reg field of the modR/M byte selects a general register; e.g., ADD(00).
+
+I   Immediate data. The value of the operand is encoded in subsequent bytes
+    of the instruction.
+
+J   The instruction contains a relative offset to be added to the
+    instruction pointer register; e.g., JMP short, LOOP.
+
+M   The modR/M byte may refer only to memory; e.g., BOUND, LES, LDS, LSS,
+    LFS, LGS.
+
+O   The instruction has no modR/M byte; the offset of the operand is coded as
+    a word or double word (depending on address size attribute) in the
+    instruction. No base register, index register, or scaling factor can be
+    applied; e.g., MOV (A0-A3).
+
+R   The mod field of the modR/M byte may refer only to a general register;
+    e.g., MOV (0F20-0F24, 0F26).
+
+S   The reg field of the modR/M byte selects a segment register; e.g., MOV
+    (8C,8E).
+
+T   The reg field of the modR/M byte selects a test register; e.g., MOV
+    (0F24,0F26).
+
+X   Memory addressed by DS:SI; e.g., MOVS, COMPS, OUTS, LODS, SCAS.
+
+Y   Memory addressed by ES:DI; e.g., MOVS, CMPS, INS, STOS.
+
+# Codes for Operant Type
+
+a   Two one-word operands in memory or two double-word operands in memory,
+    depending on operand size attribute (used only by BOUND).
+
+b   Byte (regardless of operand size attribute)
+
+c   Byte or word, depending on operand size attribute.
+
+d   Double word (regardless of operand size attribute)
+
+p   32-bit or 48-bit pointer, depending on operand size attribute.
+
+s   Six-byte pseudo-descriptor
+
+v   Word or double word, depending on operand size attribute.
+
+w   Word (regardless of operand size attribute)
+
+# Register Codes
+
+When an operand is a specific register encoded in the opcode, the register
+is identified by its name; e.g., AX, CL, or ESI. The name of the register
+indicates whether the register is 32-, 16-, or 8-bits wide. A register
+identifier of the form eXX is used when the width of the register depends on
+the operand size attribute; for example, eAX indicates that the AX register
+is used when the operand size attribute is 16 and the EAX register is used
+when the operand size attribute is 32.
+
+*/
+
 /* Ib, Iv */
 static inline make_DopHelper(I) {
   /* eip here is pointing to the immediate */
