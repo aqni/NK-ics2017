@@ -344,5 +344,6 @@ uint32_t expr(const char *e, bool *success) {
   }
 
   *success=true;
+  Log("eval %d.\n",eval(0,nr_token-1,success));
   return eval(0,nr_token-1,success);
 }
