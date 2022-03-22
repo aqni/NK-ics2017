@@ -149,7 +149,7 @@ bool check_parentheses(int lidx,int ridx,bool *success){
     if(tokens[i].type=='('){
       lb++;
     }else if(tokens[i].type==')'){
-      if(lb==0) return *success=false;
+      if(lb==0) return false;
       lb--;
     }
   }
