@@ -6,6 +6,8 @@
 #include <sys/types.h>
 #include <regex.h>
 
+uint32_t eval(int lidx, int ridx, bool *success);
+
 enum {
 
   /* DONE: Add more token types */
@@ -225,7 +227,6 @@ static int get_op_pos(int lidx,int ridx,bool* success)
     switch (tokens[i].type){
       case '(': inbracket=true; break;
       case ')': inbracket=false; break;
-
       default:break;
     }
     if(inbracket) continue;
@@ -239,8 +240,9 @@ static int get_op_pos(int lidx,int ridx,bool* success)
   assert(!inbracket);
   if(priority<0 ||(operands_num_of(tokens[op].type)<2 && op!=lidx)){
     printf("Bad expression!\n"); 
-    return *success=false;
+    *success=false;
   }
+  return op;
 }
 
 static int cal_expr(int op,int lidx,int ridx,bool* success)
@@ -278,27 +280,27 @@ static int cal_expr(int op,int lidx,int ridx,bool* success)
 }
 
 static int token_value(int pos,bool* success){
-    uint32_t val=0;
-    switch(tokens[pos].type){
-      default: return *success=false;
-      case TK_NUM:
-        if(EOF==sscanf(tokens[pos].str,"%i",&val)){
-          printf("unknow num:%s\n",tokens[pos].str); 
-          return *success=false;
+  uint32_t val=0;
+  switch(tokens[pos].type){
+    default: return *success=false;
+    case TK_NUM:
+      if(EOF==sscanf(tokens[pos].str,"%i",&val)){
+        printf("unknow num:%s\n",tokens[pos].str); 
+        return *success=false;
+      }
+      return val;
+    case TK_REG: 
+      if(0==strcmp(tokens[pos].str+1,"eip")){
+        return cpu.eip;
+      }
+      for(int i=0;i<8;i++){
+        if(0==strcmp(tokens[pos].str+1,regsl[i])){
+          return cpu.gpr[i]._32;
         }
-        return val;
-      case TK_REG: 
-        if(0==strcmp(tokens[pos].str+1,"eip")){
-          return cpu.eip;
-        }
-        for(int i=0;i<8;i++){
-          if(0==strcmp(tokens[pos].str+1,regsl[i])){
-            return cpu.gpr[i]._32;
-          }
-        }
-        Assert(0,"Unimplemented token: %d\n",tokens[pos].type);
-    }
-    return 0;
+      }
+      Assert(0,"Unimplemented token: %d\n",tokens[pos].type);
+  }
+  return 0;
 }
 
 
@@ -326,7 +328,6 @@ uint32_t eval(int lidx, int ridx, bool *success) {
     int op=get_op_pos(lidx,ridx,success);
     /* return the value */
     return cal_expr(op,lidx,ridx,success);
-
   }
 }
 
