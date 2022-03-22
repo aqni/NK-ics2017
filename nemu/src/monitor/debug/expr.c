@@ -253,7 +253,7 @@ uint32_t eval(int lidx, int ridx, bool *success) {
     /* The expression is surrounded by a matched pair of parentheses.
      * If that is the case, just throw away the parentheses.
      */
-
+      Log("success %d.\n",*success);
     return eval(lidx + 1, ridx - 1, success);
   }
   else {
