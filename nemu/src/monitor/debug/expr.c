@@ -261,9 +261,12 @@ uint32_t eval(int lidx, int ridx, bool *success) {
     int op=lidx, priority=-1;
     bool inbracket=false;
     for(int i=lidx;i<=ridx;i++){
+      Log("get the position of op: type %c, inbracket %d.\n",tokens[i].type,inbracket);
+
       switch (tokens[i].type){
         case '(': inbracket=true; break;
         case ')': inbracket=false; break;
+
         default:break;
       }
       if(inbracket) continue;
