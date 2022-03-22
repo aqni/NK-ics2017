@@ -282,6 +282,7 @@ uint32_t eval(int lidx, int ridx, bool *success) {
       printf("Bad expression!\n"); 
       return *success=false;
     }
+    Log("get the position of op: op %d.\n",op);
     /* return the value */
 
 #define EVAL_VAL1 (eval(lidx, op - 1, success))
