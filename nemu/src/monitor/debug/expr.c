@@ -332,7 +332,7 @@ uint32_t eval(int lidx, int ridx, bool *success) {
 }
 
 uint32_t expr(const char *e, bool *success) {
-  if (!make_token(e)) {
+  if (!e||!make_token(e)) {
     *success = false;
     return 0;
   }
