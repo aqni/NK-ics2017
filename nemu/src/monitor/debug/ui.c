@@ -150,6 +150,7 @@ static int cmd_x(char *args){
   char *expr_arg=strtok(NULL," ");
   int N=atoi(n_arg);
   bool success=success;
+  Log("%d\n",N);
   uint32_t addr=expr(expr_arg,&success);
   if(N<=0||!success){
     printf("Unknown command args, '%s'\n", args);
