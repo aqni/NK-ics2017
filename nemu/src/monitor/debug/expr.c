@@ -287,6 +287,7 @@ uint32_t eval(int lidx, int ridx, bool *success) {
 
 #define EVAL_VAL1 (eval(lidx, op - 1, success))
 #define EVAL_VAL2 (eval(op + 1, ridx, success))
+    Log("eval_val1: %d, eval_val2 %d.\n",EVAL_VAL1,EVAL_VAL2);
     switch (tokens[op].type) {
       default: return *success=false;
       case TK_MINUS: return - EVAL_VAL2;
