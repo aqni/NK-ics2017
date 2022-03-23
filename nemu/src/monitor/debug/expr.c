@@ -6,6 +6,8 @@
 #include <sys/types.h>
 #include <regex.h>
 
+uint32_t eval(int lidx, int ridx, bool *success);
+
 enum {
 
   /* DONE: Add more token types */
@@ -145,10 +147,11 @@ static bool make_token(const char *e) {
 bool check_parentheses(int lidx,int ridx,bool *success){
   /* Check brackets */
   int lb=0;
-  for(int i=lidx;i<=ridx;i++){
+  for(int i=lidx+1;i<ridx;i++){
     if(tokens[i].type=='('){
       lb++;
     }else if(tokens[i].type==')'){
+      if(lb==0) return false;
       lb--;
     }
   }
@@ -215,6 +218,92 @@ int operands_num_of(int type){
   }
 }
 
+static int get_op_pos(int lidx,int ridx,bool* success)
+{
+  int op=lidx, priority=-1;
+  bool inbracket=false;
+  for(int i=lidx;i<=ridx;i++){
+    Log("type %c, inbracket %d.\n",tokens[i].type,inbracket);
+    switch (tokens[i].type){
+      case '(': inbracket=true; break;
+      case ')': inbracket=false; break;
+      default:break;
+    }
+    if(inbracket) continue;
+    
+    int curr_prio=priority_of(tokens[i].type);
+    if(curr_prio>=priority){
+      op=i;
+      priority=curr_prio;
+    }
+  }
+  assert(!inbracket);
+  if(priority<0 ||(operands_num_of(tokens[op].type)<2 && op!=lidx)){
+    printf("Bad expression!\n"); 
+    *success=false;
+  }
+  return op;
+}
+
+static int cal_expr(int op,int lidx,int ridx,bool* success)
+{
+#define EVAL_VAL1 (eval(lidx, op - 1, success))
+#define EVAL_VAL2 (eval(op + 1, ridx, success))
+  Log("eval_val1: %d, eval_val2 %d.\n",EVAL_VAL1,EVAL_VAL2);
+  switch (tokens[op].type) {
+    default: return *success=false;
+    case TK_MINUS: return - EVAL_VAL2;
+    case TK_DEREF: return vaddr_read(EVAL_VAL2,4);
+    case '!': return ! EVAL_VAL2;
+    case '~': return ~ EVAL_VAL2;
+    case '*': return EVAL_VAL1 * EVAL_VAL2; 
+    case '/': return EVAL_VAL1 / EVAL_VAL2;
+    case '%': return EVAL_VAL1 % EVAL_VAL2;
+    case '+': return EVAL_VAL1 + EVAL_VAL2;
+    case '-': return EVAL_VAL1 - EVAL_VAL2;
+    case TK_LS: return EVAL_VAL1 << EVAL_VAL2;
+    case TK_RS: return EVAL_VAL1 >> EVAL_VAL2;
+    case TK_LE: return EVAL_VAL1 <= EVAL_VAL2;
+    case TK_GE: return EVAL_VAL1 >= EVAL_VAL2;
+    case '>': return EVAL_VAL1 > EVAL_VAL2;
+    case '<': return EVAL_VAL1 < EVAL_VAL2;
+    case TK_EQ: return EVAL_VAL1 == EVAL_VAL2;
+    case TK_NE: return EVAL_VAL1 != EVAL_VAL2;
+    case '&': return EVAL_VAL1 & EVAL_VAL2;
+    case '^': return EVAL_VAL1 ^ EVAL_VAL2;
+    case '|': return EVAL_VAL1 | EVAL_VAL2;
+    case TK_AND: return EVAL_VAL1 && EVAL_VAL2;
+    case TK_OR: return EVAL_VAL1 || EVAL_VAL2;
+  }
+#undef EVAL_VAL1
+#undef EVAL_VAL2
+}
+
+static int token_value(int pos,bool* success){
+  uint32_t val=0;
+  switch(tokens[pos].type){
+    default: return *success=false;
+    case TK_NUM:
+      if(EOF==sscanf(tokens[pos].str,"%i",&val)){
+        printf("unknow num:%s\n",tokens[pos].str); 
+        return *success=false;
+      }
+      return val;
+    case TK_REG: 
+      if(0==strcmp(tokens[pos].str+1,"eip")){
+        return cpu.eip;
+      }
+      for(int i=0;i<8;i++){
+        if(0==strcmp(tokens[pos].str+1,regsl[i])){
+          return cpu.gpr[i]._32;
+        }
+      }
+      Assert(0,"Unimplemented token: %d\n",tokens[pos].type);
+  }
+  return 0;
+}
+
+
 uint32_t eval(int lidx, int ridx, bool *success) {
   if (lidx > ridx) {
     /* Bad expression */
@@ -226,94 +315,24 @@ uint32_t eval(int lidx, int ridx, bool *success) {
      * For now this token should be a number.
      * Return the value of the number.
      */
-    uint32_t val=0;
-    switch(tokens[lidx].type){
-      default: return *success=false;
-      case TK_NUM:
-        if(EOF==sscanf(tokens[lidx].str,"%i",&val)){
-          printf("unknow num:%s\n",tokens[lidx].str); 
-          return *success=false;
-        }
-        return val;
-      case TK_REG: 
-        if(0==strcmp(tokens[lidx].str+1,"eip")){
-          return cpu.eip;
-        }
-        for(int i=0;i<8;i++){
-          if(0==strcmp(tokens[lidx].str+1,regsl[i])){
-            return cpu.gpr[i]._32;
-          }
-        }
-        assert(0);
-    }
-    return 0;
+    return token_value(lidx,success);
   }
   else if (check_parentheses(lidx, ridx, success) == true) {
     /* The expression is surrounded by a matched pair of parentheses.
      * If that is the case, just throw away the parentheses.
      */
-
     return eval(lidx + 1, ridx - 1, success);
   }
   else {
     /* get the position of dominant operator in the token expression */
-    int op=lidx, priority=-1;
-    bool inbracket=false;
-    for(int i=lidx;i<=ridx;i++){
-      switch (tokens[i].type){
-        case '(': inbracket=true; break;
-        case ')': inbracket=false; break;
-        default:break;
-      }
-      if(inbracket) continue;
-      
-      int curr_prio=priority_of(tokens[i].type);
-      if(curr_prio>=priority){
-        op=i;
-        priority=curr_prio;
-      }
-    }
-    assert(!inbracket);
-    if(priority<0 ||(operands_num_of(tokens[op].type)<2 && op!=lidx)){
-      printf("Bad expression!\n"); 
-      return *success=false;
-    }
+    int op=get_op_pos(lidx,ridx,success);
     /* return the value */
-
-#define EVAL_VAL1 (eval(lidx, op - 1, success))
-#define EVAL_VAL2 (eval(op + 1, ridx, success))
-    switch (tokens[op].type) {
-      default: return *success=false;
-      case TK_MINUS: return - EVAL_VAL2;
-      case TK_DEREF: return vaddr_read(EVAL_VAL2,4);
-      case '!': return ! EVAL_VAL2;
-      case '~': return ~ EVAL_VAL2;
-      case '*': return EVAL_VAL1 * EVAL_VAL2; 
-      case '/': return EVAL_VAL1 / EVAL_VAL2;
-      case '%': return EVAL_VAL1 % EVAL_VAL2;
-      case '+': return EVAL_VAL1 + EVAL_VAL2;
-      case '-': return EVAL_VAL1 - EVAL_VAL2;
-      case TK_LS: return EVAL_VAL1 << EVAL_VAL2;
-      case TK_RS: return EVAL_VAL1 >> EVAL_VAL2;
-      case TK_LE: return EVAL_VAL1 <= EVAL_VAL2;
-      case TK_GE: return EVAL_VAL1 >= EVAL_VAL2;
-      case '>': return EVAL_VAL1 > EVAL_VAL2;
-      case '<': return EVAL_VAL1 < EVAL_VAL2;
-      case TK_EQ: return EVAL_VAL1 == EVAL_VAL2;
-      case TK_NE: return EVAL_VAL1 != EVAL_VAL2;
-      case '&': return EVAL_VAL1 & EVAL_VAL2;
-      case '^': return EVAL_VAL1 ^ EVAL_VAL2;
-      case '|': return EVAL_VAL1 | EVAL_VAL2;
-      case TK_AND: return EVAL_VAL1 && EVAL_VAL2;
-      case TK_OR: return EVAL_VAL1 || EVAL_VAL2;
-    }
-#undef EVAL_VAL1
-#undef EVAL_VAL2
+    return cal_expr(op,lidx,ridx,success);
   }
 }
 
 uint32_t expr(const char *e, bool *success) {
-  if (!make_token(e)) {
+  if (!e||!make_token(e)) {
     *success = false;
     return 0;
   }
@@ -338,5 +357,6 @@ uint32_t expr(const char *e, bool *success) {
   }
 
   *success=true;
+  Log("eval %d.\n",eval(0,nr_token-1,success));
   return eval(0,nr_token-1,success);
 }

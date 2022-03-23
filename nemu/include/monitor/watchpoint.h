@@ -12,7 +12,7 @@ typedef struct watchpoint {
   int old_value;
 } WP;
 
-WP* new_wp();
+WP* new_wp(const char* expr_str);
 void free_wp(int no);
 int print_wps(bool check_change);
 
