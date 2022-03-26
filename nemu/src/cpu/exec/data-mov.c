@@ -16,7 +16,12 @@ make_EHelper(push) {
 }
 
 make_EHelper(pop) {
-  TODO();
+  if(id_dest->width==4){
+    rtl_pop(&t3);
+    operand_write(id_dest, &t3);
+  }else{
+    TODO();
+  }
 
   print_asm_template1(pop);
 }
