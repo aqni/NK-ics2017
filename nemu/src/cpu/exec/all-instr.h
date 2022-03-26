@@ -26,3 +26,4 @@ make_EHelper(jcc);
 make_EHelper(pop);
 make_EHelper(inc);
 make_EHelper(adc);
+make_EHelper(or);
