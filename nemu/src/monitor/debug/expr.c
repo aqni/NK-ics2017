@@ -223,7 +223,6 @@ static int get_op_pos(int lidx,int ridx,bool* success)
   int op=lidx, priority=-1;
   bool inbracket=false;
   for(int i=lidx;i<=ridx;i++){
-    Log("type %c, inbracket %d.\n",tokens[i].type,inbracket);
     switch (tokens[i].type){
       case '(': inbracket=true; break;
       case ')': inbracket=false; break;
@@ -249,7 +248,6 @@ static int cal_expr(int op,int lidx,int ridx,bool* success)
 {
 #define EVAL_VAL1 (eval(lidx, op - 1, success))
 #define EVAL_VAL2 (eval(op + 1, ridx, success))
-  Log("eval_val1: %d, eval_val2 %d.\n",EVAL_VAL1,EVAL_VAL2);
   switch (tokens[op].type) {
     default: return *success=false;
     case TK_MINUS: return - EVAL_VAL2;
@@ -357,6 +355,5 @@ uint32_t expr(const char *e, bool *success) {
   }
 
   *success=true;
-  Log("eval %d.\n",eval(0,nr_token-1,success));
   return eval(0,nr_token-1,success);
 }
