@@ -24,3 +24,4 @@ make_EHelper(movsx);
 make_EHelper(test);
 make_EHelper(jcc);
 make_EHelper(pop);
+make_EHelper(inc);
