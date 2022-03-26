@@ -88,8 +88,6 @@ opcode_entry opcode_table [512] = {
   /* 0x34 */	EMPTY, EMPTY, EMPTY, EMPTY,
   /* 0x38 */	EMPTY, EMPTY, EMPTY, IDEX(E2G,cmp),
   /* 0x3c */	EMPTY, EMPTY, EMPTY, EMPTY,
-  /* 0x40 */	EMPTY, EMPTY, EMPTY, EMPTY,
-  /* 0x44 */	EMPTY, EMPTY, EMPTY, EMPTY,
   /* 0x40 */	IDEX(r, inc), IDEX(r, inc), IDEX(r, inc), IDEX(r, inc),
   /* 0x44 */	IDEX(r, inc), IDEX(r, inc), IDEX(r, inc), IDEX(r, inc),
   /* 0x50 */	IDEX(r,push), IDEX(r,push), IDEX(r,push), IDEX(r,push),
