@@ -6,22 +6,14 @@ make_EHelper(mov) {
 }
 
 make_EHelper(push) {
-  if(id_dest->width==4){
-    rtl_push(&id_dest->val);
-  }else{
-    TODO();
-  }
+  rtl_push(&id_dest->val);
 
   print_asm_template1(push);
 }
 
 make_EHelper(pop) {
-  if(id_dest->width==4){
-    rtl_pop(&t3);
-    operand_write(id_dest, &t3);
-  }else{
-    TODO();
-  }
+  rtl_pop(&t3);
+  operand_write(id_dest, &t3);
 
   print_asm_template1(pop);
 }
