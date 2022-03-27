@@ -31,6 +31,7 @@ void diff_test_skip_nemu() { is_skip_nemu = true; }
     regs.esi = cpu.esi; \
     regs.edi = cpu.edi; \
     regs.eip = cpu.eip; \
+    regs.eflags=cpu.eflags.reg;\
   } while (0)
 
 static uint8_t mbr[] = {
