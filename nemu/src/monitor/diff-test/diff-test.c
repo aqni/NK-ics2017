@@ -134,6 +134,8 @@ do{                                           \
   }                                           \
 }while(0)
 
+#define EM(r) (r|4)
+
 void difftest_step(uint32_t eip) {
   union gdb_regs r;
   bool diff = false;
@@ -166,7 +168,7 @@ void difftest_step(uint32_t eip) {
       || r.ebp != cpu.ebp 
       || r.esi != cpu.esi
       || r.edi != cpu.edi
-      || r.eflags != cpu.eflags.reg){
+      || EM(r.eflags) != EM(cpu.eflags.reg)){
     diff=true;
     Log("diff_test--diff while cpu.eip == %#X\n",cpu.eip);
     LOG_DIFF(r.eip, cpu.eip);
@@ -177,7 +179,7 @@ void difftest_step(uint32_t eip) {
     LOG_DIFF(r.ebp, cpu.ebp );
     LOG_DIFF(r.esi, cpu.esi);
     LOG_DIFF(r.edi, cpu.edi);
-    LOG_DIFF(r.eflags, cpu.eflags.reg);
+    LOG_DIFF(EM(r.eflags), EM(cpu.eflags.reg));
   }
       /* TDOD: 段寄存器未实现 */
       ;
