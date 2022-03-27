@@ -60,7 +60,8 @@ make_EHelper(cltd) {
     rtl_sr(R_DX,2, &t2);
   } else {
     rtl_lr(&t2, R_EAX,4);
-    rtl_sari(&t2, &t2, 32);
+    rtl_sari(&t2, &t2, 16);
+    rtl_sari(&t2, &t2, 16);
     rtl_sr(R_EDX, 4, &t2);
   }
 
