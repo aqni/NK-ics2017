@@ -85,9 +85,7 @@ void init_difftest(void) {
     }
 
     close(STDIN_FILENO);
-    Log("before\n");
     execlp("qemu-system-i386", "qemu-system-i386", "-S", "-s", "-nographic", NULL);
-    Log("after\n");
     perror("exec");
     panic("exec error");
   }
@@ -151,7 +149,7 @@ void difftest_step(uint32_t eip) {
 
   // DONE: Check the registers state with QEMU.
   // Set `diff` as `true` if they are not the same.
-  diff = r.eip != cpu.eip
+  if( r.eip != cpu.eip
       || r.eax != cpu.eax 
       || r.ebx != cpu.ebx 
       || r.ecx != cpu.ecx 
@@ -160,7 +158,10 @@ void difftest_step(uint32_t eip) {
       || r.ebp != cpu.ebp 
       || r.esi != cpu.esi
       || r.edi != cpu.edi
-      || r.eflags != cpu.eflags.reg
+      || r.eflags != cpu.eflags.reg){
+    diff=true;
+    Log("diff_test--diff while cpu.eip == %#X\n",cpu.eip);
+  }
       /* TDOD: 段寄存器未实现 */
       ;
 
