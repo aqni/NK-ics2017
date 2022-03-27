@@ -6,14 +6,22 @@ make_EHelper(mov) {
 }
 
 make_EHelper(push) {
-  rtl_push(&id_dest->val);
+  if (decoding.is_operand_size_16) {
+    TODO();
+  }else{
+    rtl_push(&id_dest->val);
+  }
 
   print_asm_template1(push);
 }
 
 make_EHelper(pop) {
-  rtl_pop(&t3);
-  operand_write(id_dest, &t3);
+  if (decoding.is_operand_size_16) {
+    TODO();
+  }else{
+    rtl_pop(&t3);
+    operand_write(id_dest, &t3);
+  }
 
   print_asm_template1(pop);
 }
@@ -31,7 +39,15 @@ make_EHelper(popa) {
 }
 
 make_EHelper(leave) {
-  TODO();
+  if (decoding.is_operand_size_16) {
+    TODO();
+  }
+  else {
+    rtl_lr(&t0,R_EBP,4);
+    rtl_sr(R_ESP,4,&t0);
+    rtl_pop(&t0);
+    rtl_sr(R_EBP,4,&t0);
+  }
 
   print_asm("leave");
 }
