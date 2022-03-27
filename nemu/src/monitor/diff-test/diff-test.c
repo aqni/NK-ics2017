@@ -87,8 +87,7 @@ void init_difftest(void) {
 
     close(STDIN_FILENO);
    
-        
-    execlp("qemu-system-i386", "qemu-system-i386", "-S", "-gdb", "tcp:1234", "-nographic",
+    execlp("qemu-system-i386", "qemu-system-i386", "-S", "-gdb", "tcp::1234", "-nographic",
            "-serial", "none", "-monitor", "none", NULL);
     perror("exec");
     panic("exec error");
