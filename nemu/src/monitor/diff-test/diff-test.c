@@ -135,7 +135,7 @@ do{                                           \
 }while(0)
 
 /* only CF SF ZF OF */
-#define EM(r) (r|8C1h) 
+#define EM(r) (r|0x8C1) 
 
 void difftest_step(uint32_t eip) {
   union gdb_regs r;
