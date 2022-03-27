@@ -126,6 +126,13 @@ void init_qemu_reg() {
   assert(ok == 1);
 }
 
+#define LOG_DIFF(q,n)                         \
+do{                                           \
+  if(q!=n){                                   \
+    Log(str(q)"!="str(n)"(%#X!=%#X)\n",q,n);  \
+  }                                           \
+}while(0)
+
 void difftest_step(uint32_t eip) {
   union gdb_regs r;
   bool diff = false;
@@ -161,6 +168,15 @@ void difftest_step(uint32_t eip) {
       || r.eflags != cpu.eflags.reg){
     diff=true;
     Log("diff_test--diff while cpu.eip == %#X\n",cpu.eip);
+    LOG_DIFF(r.eip, cpu.eip);
+    LOG_DIFF(r.ebx, cpu.ebx);
+    LOG_DIFF(r.ecx, cpu.ecx);
+    LOG_DIFF(r.edx, cpu.edx );
+    LOG_DIFF(r.esp, cpu.esp );
+    LOG_DIFF(r.ebp, cpu.ebp );
+    LOG_DIFF(r.esi, cpu.esi);
+    LOG_DIFF(r.edi, cpu.edi);
+    LOG_DIFF(r.eflags, cpu.eflags.reg);
   }
       /* TDOD: 段寄存器未实现 */
       ;
