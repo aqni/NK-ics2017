@@ -43,7 +43,13 @@ make_EHelper(ret) {
 }
 
 make_EHelper(call_rm) {
-  TODO();
-
+  if(decoding.is_operand_size_16){
+    TODO();
+  }else{
+    rtl_push(&decoding.seq_eip);
+  }
+  decoding.jmp_eip = id_dest->val;
+  decoding.is_jmp=true;
+  
   print_asm("call *%s", id_dest->str);
 }
