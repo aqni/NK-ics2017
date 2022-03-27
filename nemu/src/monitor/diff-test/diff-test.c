@@ -147,9 +147,20 @@ void difftest_step(uint32_t eip) {
   gdb_si();
   gdb_getregs(&r);
 
-  // TODO: Check the registers state with QEMU.
+  // DONE: Check the registers state with QEMU.
   // Set `diff` as `true` if they are not the same.
-  TODO();
+  diff = r.eip != cpu.eip
+      || r.eax != cpu.eax 
+      || r.ebx != cpu.ebx 
+      || r.ecx != cpu.ecx 
+      || r.edx != cpu.edx 
+      || r.esp != cpu.esp 
+      || r.ebp != cpu.ebp 
+      || r.esi != cpu.esi
+      || r.edi != cpu.edi
+      || r.eflags != cpu.eflags.reg
+      /* TDOD: 段寄存器未实现 */
+      ;
 
   if (diff) {
     nemu_state = NEMU_END;
