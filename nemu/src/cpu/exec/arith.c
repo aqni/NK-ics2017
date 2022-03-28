@@ -6,8 +6,9 @@ make_EHelper(add) {
   rtl_update_ZFSF(&t2, id_dest->width);
 
   rtl_sltu(&t0, &t2, &id_dest->val);
-  Log("t2:%#x,id_dest->val:%#x,t0:%#x",t2,id_dest->val,t0);
   rtl_set_CF(&t0);
+  rtl_get_CF(&t0);
+  Log("t2:%#x,id_dest->val:%#x,t0:%#x",t2,id_dest->val,t0);
 
   operand_write(id_dest, &t2);
 
