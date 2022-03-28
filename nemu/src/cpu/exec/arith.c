@@ -82,16 +82,16 @@ make_EHelper(neg) {
 }
 
 make_EHelper(adc) {
-  rtl_add(&t2, &id_dest->val, &id_src->val);
-  rtl_sltu(&t3, &t2, &id_dest->val);
+  rtl_add(&t0, &id_dest->val, &id_src->val);
+  rtl_sltu(&t3, &t0, &id_dest->val);
   Log("t2:%#x,id_dest->val:%#x,id_src->val:%#x,t3:%#x",t2,id_dest->val,id_src->val,t3);
   rtl_get_CF(&t1);
-  rtl_add(&t2, &t2, &t1);
+  rtl_add(&t2, &t0, &t1);
   operand_write(id_dest, &t2);
 
   rtl_update_ZFSF(&t2, id_dest->width);
 
-  rtl_sltu(&t0, &t2, &id_dest->val);
+  rtl_sltu(&t0, &t2, &t0);
   rtl_or(&t0, &t3, &t0);
 
   rtl_set_CF(&t0);
