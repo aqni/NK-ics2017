@@ -92,7 +92,7 @@ make_EHelper(adc) {
   rtl_update_ZFSF(&t2, id_dest->width);
 
   rtl_sltu(&t0, &t2, &id_dest->val);
-  Log("t22:%#x,t0:%#x",t2,t0);
+  Log("t22:%#x,t0:%#x,id_dest->val:%#x",t2,t0,id_dest->val);
   rtl_or(&t0, &t3, &t0);
   rtl_set_CF(&t0);
 
