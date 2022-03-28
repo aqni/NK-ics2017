@@ -87,6 +87,7 @@ make_EHelper(neg) {
 }
 
 make_EHelper(adc) {
+    Log("t2:%#x,id_dest->val:%#x,t0:%#x",t2,id_dest->val,t0);
   rtl_add(&t2, &id_dest->val, &id_src->val);
   rtl_sltu(&t3, &t2, &id_dest->val);
   rtl_get_CF(&t1);
@@ -97,7 +98,7 @@ make_EHelper(adc) {
   rtl_sltu(&t0, &t2, &id_dest->val);
   rtl_or(&t0, &t3, &t0);
   rtl_set_CF(&t0);
-  Log("t2:%#x,id_dest->val:%#x,t0:%#x",t2,id_dest->val,t0);
+
 
   rtl_xor(&t0, &id_dest->val, &id_src->val);
   rtl_not(&t0);
