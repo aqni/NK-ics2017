@@ -45,3 +45,5 @@ make_EHelper(cwtl);
 make_EHelper(cltd);
 make_EHelper(sbb);
 make_EHelper(call_rm);
+make_EHelper(in);
+make_EHelper(out);
