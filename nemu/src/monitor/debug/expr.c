@@ -147,7 +147,7 @@ static bool make_token(const char *e) {
 bool check_parentheses(int lidx,int ridx,bool *success){
   /* Check brackets */
   int lb=0;
-  for(int i=lidx+1;i<=ridx;i++){
+  for(int i=lidx;i<=ridx;i++){
     if(tokens[i].type=='('){
       lb++;
     }else if(tokens[i].type==')'){
