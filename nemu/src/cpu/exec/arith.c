@@ -83,7 +83,20 @@ make_EHelper(dec) {
 }
 
 make_EHelper(neg) {
-  TODO();
+  rtl_mv(&t2, &id_dest->val);
+  rtl_not(&t2);
+  rtl_addi(&t2, &t2, 1);
+  operand_write(id_dest, &t2); //r/m ← - r/m;
+
+  rtl_eq0(&t1, &id_dest->val);
+  rtl_set_CF(&t1);   //IF r/m = 0 THEN CF ← 0 ELSE CF ← 1; FI; 
+
+  rtl_update_ZFSF(&t2, id_dest->width);
+  //如果id_dest->val过小则取负后会溢出为负数
+  rtl_xor(&t1, &t2, &id_dest->val); 
+  rtl_not(&t1);
+  rtl_msb(&t1, &t1, id_dest->width);
+  rtl_set_OF(&t1);
 
   print_asm_template1(neg);
 }
