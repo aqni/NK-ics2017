@@ -326,6 +326,7 @@ uint32_t eval(int lidx, int ridx, bool *success) {
   else {
     /* get the position of dominant operator in the token expression */
     int op=get_op_pos(lidx,ridx,success);
+    Log("opindex:%d\n",op);
     /* return the value */
     return cal_expr(op,lidx,ridx,success);
   }
