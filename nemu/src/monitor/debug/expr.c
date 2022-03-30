@@ -147,7 +147,7 @@ static bool make_token(const char *e) {
 bool check_parentheses(int lidx,int ridx,bool *success){
   /* Check brackets */
   int lb=0;
-  for(int i=lidx+1;i<ridx;i++){
+  for(int i=lidx;i<=ridx;i++){
     if(tokens[i].type=='('){
       lb++;
     }else if(tokens[i].type==')'){
@@ -324,6 +324,7 @@ uint32_t eval(int lidx, int ridx, bool *success) {
   else {
     /* get the position of dominant operator in the token expression */
     int op=get_op_pos(lidx,ridx,success);
+    Log("opindex:%d\n",op);
     /* return the value */
     return cal_expr(op,lidx,ridx,success);
   }
