@@ -86,3 +86,16 @@ make_EHelper(not) {
 
   print_asm_template1(not);
 }
+
+make_EHelper(rol) {
+  rtl_shl(&t2, &id_dest->val, &id_src->val);
+  rtl_li(&t1,4*id_dest->width);
+  rtl_sub(&t1, &t1, &id_src->val);
+  rtl_shr(&t0, &id_dest->val, &t1);
+  rtl_or(&t2, &t2, &t0);
+  operand_write(id_dest, &t2);
+
+  rtl_update_ZFSF(&t2, id_dest->width);
+
+  print_asm_template2(rol);
+}
