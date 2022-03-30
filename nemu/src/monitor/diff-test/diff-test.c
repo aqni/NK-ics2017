@@ -184,9 +184,8 @@ void difftest_step(uint32_t eip) {
     LOG_DIFF(r.esi, cpu.esi);
     LOG_DIFF(r.edi, cpu.edi);
     // LOG_DIFF(EM(r.eflags), EM(cpu.eflags.reg));
+    /* TDOD: 段寄存器未实现 */
   }
-      /* TDOD: 段寄存器未实现 */
-      ;
 
   if (diff) {
     nemu_state = NEMU_END;
