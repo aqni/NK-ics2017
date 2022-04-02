@@ -1,5 +1,5 @@
 include $(AM_HOME)/Makefile.check
-.PHONY: all run clean latest $(ALL)
+.PHONY: all run gdb clean latest $(ALL)
 
 ALL = $(basename $(notdir $(shell find tests/. -name "*.c")))
 
@@ -14,6 +14,7 @@ Makefile.%: tests/%.c latest
 	-@rm -f Makefile.$*
 
 run: all
+gdb: all
 
 clean: 
 	rm -rf Makefile.* build/

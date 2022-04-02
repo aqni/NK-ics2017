@@ -6,13 +6,22 @@ make_EHelper(mov) {
 }
 
 make_EHelper(push) {
-  TODO();
+  if (decoding.is_operand_size_16) {
+    TODO();
+  }else{
+    rtl_push(&id_dest->val);
+  }
 
   print_asm_template1(push);
 }
 
 make_EHelper(pop) {
-  TODO();
+  if (decoding.is_operand_size_16) {
+    TODO();
+  }else{
+    rtl_pop(&t3);
+    operand_write(id_dest, &t3);
+  }
 
   print_asm_template1(pop);
 }
@@ -30,17 +39,30 @@ make_EHelper(popa) {
 }
 
 make_EHelper(leave) {
-  TODO();
+  if (decoding.is_operand_size_16) {
+    TODO();
+  }
+  else {
+    rtl_lr(&t0,R_EBP,4);
+    rtl_sr(R_ESP,4,&t0);
+    rtl_pop(&t0);
+    rtl_sr(R_EBP,4,&t0);
+  }
 
   print_asm("leave");
 }
 
 make_EHelper(cltd) {
   if (decoding.is_operand_size_16) {
-    TODO();
-  }
-  else {
-    TODO();
+    rtl_lr(&t2, R_AX,2);
+    rtl_sext(&t2, &t2, 2);
+    rtl_sari(&t2, &t2, 16);
+    rtl_sr(R_DX,2, &t2);
+  } else {
+    rtl_lr(&t2, R_EAX,4);
+    rtl_sari(&t2, &t2, 16); //直接移位32位会出现浮点异常
+    rtl_sari(&t2, &t2, 16);
+    rtl_sr(R_EDX, 4, &t2);
   }
 
   print_asm(decoding.is_operand_size_16 ? "cwtl" : "cltd");
@@ -48,10 +70,14 @@ make_EHelper(cltd) {
 
 make_EHelper(cwtl) {
   if (decoding.is_operand_size_16) {
-    TODO();
+    rtl_lr(&t2, R_AX, 1);
+    rtl_sext(&t2, &t2, 1);
+    rtl_sr(R_AX,2, &t2);
   }
   else {
-    TODO();
+    rtl_lr(&t0, R_AX, 2);
+    rtl_sext(&t0, &t0, 2);
+    rtl_sr(R_EAX, 4, &t0);
   }
 
   print_asm(decoding.is_operand_size_16 ? "cbtw" : "cwtl");

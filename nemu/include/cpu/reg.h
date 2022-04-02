@@ -35,6 +35,33 @@ typedef struct {
 
   vaddr_t eip;
 
+  union /* eflags */
+  {
+    /* Status Flags' Functions
+
+        Bit   Name   Function
+        0     CF     Carry Flag ── Set on high-order bit carry or borrow; 
+                     cleared otherwise.
+        2     PF     Parity Flag ── Set if low-order eight bits of result 
+                     contain an even number of 1 bits; cleared otherwise.
+        4     AF     Adjust flag ── Set on carry from or borrow to the low 
+                     order four bits of AL; cleared otherwise. Used for decimal
+                     arithmetic.
+        6     ZF     Zero Flag ── Set if result is zero; cleared otherwise.
+        7     SF     Sign Flag ── Set equal to high-order bit of result (0 is
+                     positive, 1 if negative).
+        11    OF     Overflow Flag ── Set if result is too large a positive 
+                     number or too small a negative number (excluding sign-bit) 
+                     to fit in destination operand; cleared otherwise.
+    */
+    rtlreg_t reg;
+    struct { /* Bit-Fields: https://www.cnblogs.com/axjlxy/p/15008070.html */
+      rtlreg_t CF:1, _1:1, PF:1, _3:1, AF:1, _5:1, ZF:1, SF:1, /* 1 - 7 */
+               TF:1, IF:1, DF:1, OF:1, IOPL:2,     NT:1, _f:1, /* 8 - 15 */
+               RF:1, VM:1, :0;                                 /* 16 -17 */
+    };
+  } eflags;
+
 } CPU_state;
 
 extern CPU_state cpu;

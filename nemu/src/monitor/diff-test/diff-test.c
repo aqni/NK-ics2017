@@ -31,6 +31,7 @@ void diff_test_skip_nemu() { is_skip_nemu = true; }
     regs.esi = cpu.esi; \
     regs.edi = cpu.edi; \
     regs.eip = cpu.eip; \
+    regs.eflags=cpu.eflags.reg;\
   } while (0)
 
 static uint8_t mbr[] = {
@@ -85,7 +86,9 @@ void init_difftest(void) {
     }
 
     close(STDIN_FILENO);
-    execlp("qemu-system-i386", "qemu-system-i386", "-S", "-s", "-nographic", NULL);
+   
+    execlp("qemu-system-i386", "qemu-system-i386", "-S", "-gdb", "tcp::1234", "-nographic",
+           "-serial", "none", "-monitor", "none", NULL);
     perror("exec");
     panic("exec error");
   }
@@ -126,6 +129,16 @@ void init_qemu_reg() {
   assert(ok == 1);
 }
 
+#define LOG_DIFF(q,n)                         \
+do{                                           \
+  if(q!=n){                                   \
+    Log(str(q)"!="str(n)"(%#X!=%#X)\n",q,n);  \
+  }                                           \
+}while(0)
+
+/* only CF SF ZF OF */
+#define EM(r) (r&0x8C1) 
+
 void difftest_step(uint32_t eip) {
   union gdb_regs r;
   bool diff = false;
@@ -147,9 +160,32 @@ void difftest_step(uint32_t eip) {
   gdb_si();
   gdb_getregs(&r);
 
-  // TODO: Check the registers state with QEMU.
+  // DONE: Check the registers state with QEMU.
   // Set `diff` as `true` if they are not the same.
-  TODO();
+  if( r.eip != cpu.eip
+      || r.eax != cpu.eax 
+      || r.ebx != cpu.ebx 
+      || r.ecx != cpu.ecx 
+      || r.edx != cpu.edx 
+      || r.esp != cpu.esp 
+      || r.ebp != cpu.ebp 
+      || r.esi != cpu.esi
+      || r.edi != cpu.edi
+      // || EM(r.eflags) != EM(cpu.eflags.reg)
+    ){
+    diff=true;
+    Log("diff_test--diff while cpu.eip == %#X\n",cpu.eip);
+    LOG_DIFF(r.eip, cpu.eip);
+    LOG_DIFF(r.ebx, cpu.ebx);
+    LOG_DIFF(r.ecx, cpu.ecx);
+    LOG_DIFF(r.edx, cpu.edx );
+    LOG_DIFF(r.esp, cpu.esp );
+    LOG_DIFF(r.ebp, cpu.ebp );
+    LOG_DIFF(r.esi, cpu.esi);
+    LOG_DIFF(r.edi, cpu.edi);
+    // LOG_DIFF(EM(r.eflags), EM(cpu.eflags.reg));
+    /* TDOD: 段寄存器未实现 */
+  }
 
   if (diff) {
     nemu_state = NEMU_END;

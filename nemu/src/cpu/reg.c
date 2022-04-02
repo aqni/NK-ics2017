@@ -40,4 +40,23 @@ void reg_test() {
   assert(sample[R_EDI] == cpu.edi);
 
   assert(eip_sample == cpu.eip);
+
+  cpu.eflags.reg=0b111101111011101101;
+  assert(cpu.eflags.CF == 1);
+  assert(cpu.eflags._1 == 0);
+  assert(cpu.eflags.PF == 1);
+  assert(cpu.eflags._3 == 1);
+  assert(cpu.eflags.AF == 0);
+  assert(cpu.eflags._5 == 1);
+  assert(cpu.eflags.ZF == 1);
+  assert(cpu.eflags.SF == 1);
+  assert(cpu.eflags.TF == 0);
+  assert(cpu.eflags.IF == 1);
+  assert(cpu.eflags.DF == 1);
+  assert(cpu.eflags.OF == 1);
+  assert(cpu.eflags.IOPL == 0b01);
+  assert(cpu.eflags.NT == 1);
+  assert(cpu.eflags._f == 1);
+  assert(cpu.eflags.RF == 1);
+  assert(cpu.eflags.VM == 1);
 }
