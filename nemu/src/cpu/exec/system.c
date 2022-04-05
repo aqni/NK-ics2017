@@ -28,7 +28,8 @@ make_EHelper(mov_cr2r) {
 }
 
 make_EHelper(int) {
-  TODO();
+  extern void raise_intr(uint8_t NO, vaddr_t save_addr);
+  raise_intr(id_dest->val,decoding.seq_eip);
 
   print_asm("int %s", id_dest->str);
 
