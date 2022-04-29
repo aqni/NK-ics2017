@@ -27,13 +27,36 @@ make_EHelper(pop) {
 }
 
 make_EHelper(pusha) {
-  TODO();
+  if (decoding.is_operand_size_16) {
+    TODO();
+  }else{
+    rtl_lr(&t1,R_ESP,4);
+    rtl_lr(&t0,R_EAX,4);rtl_push(&t0);
+    rtl_lr(&t0,R_ECX,4);rtl_push(&t0);
+    rtl_lr(&t0,R_EDX,4);rtl_push(&t0);
+    rtl_lr(&t0,R_EBX,4);rtl_push(&t0);
+    rtl_push(&t1);
+    rtl_lr(&t0,R_EBP,4);rtl_push(&t0);
+    rtl_lr(&t0,R_ESI,4);rtl_push(&t0);
+    rtl_lr(&t0,R_EDI,4);rtl_push(&t0);
+  }
 
   print_asm("pusha");
 }
 
 make_EHelper(popa) {
-  TODO();
+  if (decoding.is_operand_size_16) {
+    TODO();
+  }else{
+    rtl_pop(&t0);rtl_sr(R_EDI,4,&t1);
+    rtl_pop(&t0);rtl_sr(R_ESI,4,&t1);
+    rtl_pop(&t0);rtl_sr(R_EBP,4,&t1);
+    rtl_pop(&t0);
+    rtl_pop(&t0);rtl_sr(R_EBX,4,&t1);
+    rtl_pop(&t0);rtl_sr(R_EDX,4,&t1);
+    rtl_pop(&t0);rtl_sr(R_ECX,4,&t1);
+    rtl_pop(&t0);rtl_sr(R_EAX,4,&t1);
+  }
 
   print_asm("popa");
 }
