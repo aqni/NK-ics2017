@@ -39,7 +39,11 @@ make_EHelper(int) {
 }
 
 make_EHelper(iret) {
-  TODO();
+  decoding.is_jmp = true;
+  rtl_pop(&decoding.jmp_eip);
+  rtl_pop(&t0);
+  cpu.cs=(uint16_t)t0;
+  rtl_pop(&cpu.eflags.reg);
 
   print_asm("iret");
 }
