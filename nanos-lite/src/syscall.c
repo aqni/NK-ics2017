@@ -13,10 +13,12 @@ _RegSet* do_syscall(_RegSet *r) {
     case SYS_none: SYSCALL_RET(r)=1;break;
     case SYS_exit: _halt(a[1]);break;
     case SYS_write:
+      printf("a[2]:%x\n",a[2]);
       if(a[1]==1||a[1]==2)
         for(int i=0;i<a[3];i++)
-          _putc(((uint8_t*)a[2])[i]);
+          _putc(((char*)a[2])[i]);
       SYSCALL_RET(r)=a[3];
+      break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 
