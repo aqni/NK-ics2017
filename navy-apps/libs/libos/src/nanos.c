@@ -40,7 +40,7 @@ void *_sbrk(intptr_t increment){
 }
 
 int _read(int fd, void *buf, size_t count) {
-  return _syscall_(SYS_read,(uintptr_t)buf,count,0);
+  return _syscall_(SYS_read,fd,(uintptr_t)buf,count);
 }
 
 int _close(int fd) {
