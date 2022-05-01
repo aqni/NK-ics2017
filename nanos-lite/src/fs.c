@@ -98,7 +98,7 @@ off_t fs_lseek(int fd, off_t offset,int whence){
     case SEEK_END: offset += file->size; break;
     default:return -1;
   }
-  Log("offset:%d",offset);
+  Log("offset:%ld",offset);
   if (offset < 0||offset > file->size)
     return -1;
 
