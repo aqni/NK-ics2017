@@ -31,7 +31,7 @@ int main() {
   init_fs();
   const char path[]="/bin/text";
   uint32_t entry = loader(NULL,path);
-  Log("loader '%s' success.",path);
+  Log("load '%s' success.",path);
   ((void (*)(void))entry)();
 
   panic("Should not reach here");
