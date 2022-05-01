@@ -93,9 +93,9 @@ off_t fs_lseek(int fd, off_t offset,int whence){
   Finfo* file=&file_table[fd];
 
   switch(whence){
-    case SEEK_END: offset += file->size; break;
-    case SEEK_CUR: offset += file->open_offset; break;
     case SEEK_SET: break;
+    case SEEK_CUR: offset += file->open_offset; break;
+    case SEEK_END: offset += file->size; break;
     default:return -1;
   }
 
