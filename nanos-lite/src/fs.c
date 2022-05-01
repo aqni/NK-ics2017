@@ -4,6 +4,7 @@ typedef struct {
   char *name;
   size_t size;
   off_t disk_offset;
+  off_t open_offset;
 } Finfo;
 
 enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB, FD_EVENTS, FD_DISPINFO, FD_NORMAL};
@@ -23,4 +24,92 @@ static Finfo file_table[] __attribute__((used)) = {
 
 void init_fs() {
   // TODO: initialize the size of /dev/fb
+}
+
+int fs_open(const char *pathname, int flags, int mode){
+  for(int fd=0;fd< NR_FILES;fd++){
+    if(0==strcmp(pathname, file_table[fd].name)){
+      file_table[fd].open_offset=0;
+      return fd;
+    }
+  }
+  assert(0);
+  return -1;
+}
+
+#define MYMIN(a,b) ((a)<(b)?(a):(b))
+extern void ramdisk_read(void *buf, off_t offset, size_t len);
+ssize_t fs_read(int fd, void *buf, size_t len){
+  if(fd<0||fd>=NR_FILES) return -1;
+  Finfo* file=&file_table[fd];
+  ssize_t nread=MYMIN(len,file->size-file->open_offset);
+
+  switch(fd){
+    case FD_STDIN:
+    case FD_STDOUT:
+    case FD_STDERR:
+    case FD_FB:
+    case FD_EVENTS:
+    case FD_DISPINFO:
+    case FD_NORMAL:
+      return -1;
+    default:
+      ramdisk_read(buf,file->disk_offset+file->open_offset,nread);
+      break;
+  }
+  file->open_offset += nread;
+  return nread;
+}
+
+extern void ramdisk_write(const void *buf, off_t offset, size_t len);
+ssize_t fs_write(int fd, uint8_t *buf, size_t len){
+  if(fd<0||fd>=NR_FILES) return -1;
+  Finfo* file=&file_table[fd];
+  ssize_t nwrite=MYMIN(len,file->size-file->open_offset);
+
+  switch(fd){
+    case FD_STDIN:
+      return -1;
+    case FD_STDOUT:
+    case FD_STDERR:
+      for(ssize_t i=0;i<nwrite;i++) _putc(buf[i]);
+      break;
+    case FD_FB:
+    case FD_EVENTS:
+    case FD_DISPINFO:
+    case FD_NORMAL:
+      return -1;
+    default:
+      ramdisk_write(buf,file->disk_offset+file->open_offset,nwrite);
+      break;
+  }
+
+  file->open_offset += nwrite;
+  return nwrite;
+}
+
+off_t fs_lseek(int fd, off_t offset,int whence){
+  if(fd<0||fd>=NR_FILES) return -1;
+  Finfo* file=&file_table[fd];
+
+  switch(whence){
+    case SEEK_END: offset += file->size; break;
+    case SEEK_CUR: offset += file->open_offset; break;
+    case SEEK_SET: break;
+    default:return -1;
+  }
+
+  if (offset < 0||offset > file->size)
+    return -1;
+
+  return file->open_offset = offset;
+}
+
+
+int fs_close(int fd){
+  return 0;
+}
+
+size_t fs_filesz(int fd){
+  return file_table[fd].size;
 }
