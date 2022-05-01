@@ -89,6 +89,7 @@ ssize_t fs_write(int fd, uint8_t *buf, size_t len){
 }
 
 off_t fs_lseek(int fd, off_t offset,int whence){
+  Log("fd:%d",fd);
   if( fd<0 || fd >=NR_FILES) return -1;
   Finfo* file=&file_table[fd];
 
@@ -98,7 +99,7 @@ off_t fs_lseek(int fd, off_t offset,int whence){
     case SEEK_END: offset += file->size; break;
     default:return -1;
   }
-  Log("offset:%ld",offset);
+  Log("offset:%d",offset);
   if (offset < 0||offset > file->size)
     return -1;
 
