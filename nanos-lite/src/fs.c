@@ -72,8 +72,8 @@ ssize_t fs_write(int fd, uint8_t *buf, size_t len){
       return -1;
     case FD_STDOUT:
     case FD_STDERR:
-      for(ssize_t i=0;i<nwrite;i++) _putc(buf[i]);
-      break;
+      for(ssize_t i=0;i<len;i++) _putc(buf[i]);
+      return len;
     case FD_FB:
     case FD_EVENTS:
     case FD_DISPINFO:
