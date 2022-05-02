@@ -8,6 +8,7 @@ static const char *keyname[256] __attribute__((used)) = {
   _KEYS(NAME)
 };
 
+extern int _read_key();
 size_t events_read(void *buf, size_t len) {
   // int key_code;
   int keyinput=_read_key();
