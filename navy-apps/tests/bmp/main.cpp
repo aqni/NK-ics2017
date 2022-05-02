@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <ndl.h>
-
+#include <stdio.h>
 int main() {
   printf("line pass:%s\n",__LINE__);
   NDL_Bitmap *bmp = (NDL_Bitmap*)malloc(sizeof(NDL_Bitmap));
