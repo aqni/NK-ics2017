@@ -21,12 +21,18 @@ void dispinfo_read(void *buf, off_t offset, size_t len) {
 }
 
 void fb_write(const void *buf, off_t offset, size_t len) {
-  if(offset >= _screen.width * _screen.height){
-    // assert(0);
-  }
+  // if(offset >= _screen.width * _screen.height){
+  //   assert(0);
+  // }
   
-  int x=offset%_screen.width,y=offset/ _screen.width;
-  _draw_rect(buf,x,y,len/sizeof(uint32_t),1);
+  // int x=offset%_screen.width,y=offset/ _screen.width;
+  // _draw_rect(buf,x,y,len/sizeof(uint32_t),1);
+  int row, col;
+  offset /= 4;
+  col = offset % _screen.width;
+  row = offset / _screen.width;
+
+  _draw_rect(buf, col, row, len/4, 1);
 }
 
 void init_device() {
