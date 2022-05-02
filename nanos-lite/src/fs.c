@@ -113,33 +113,61 @@ ssize_t fs_read(int fd, void *buf, size_t len) {
 extern void ramdisk_write(const void *buf, off_t offset, size_t len);
 extern void fb_write(const void *buf, off_t offset, size_t len);
 
-ssize_t fs_write(int fd, uint8_t *buf, size_t len){
-  if(fd<0||fd>=NR_FILES) return -1;
-  Finfo* file=&file_table[fd];
-  ssize_t nwrite=MYMIN(len,file->size-file->open_offset);
+// ssize_t fs_write(int fd, uint8_t *buf, size_t len){
+//   if(fd<0||fd>=NR_FILES) return -1;
+//   Finfo* file=&file_table[fd];
+//   ssize_t nwrite=MYMIN(len,file->size-file->open_offset);
 
-  switch(fd){
-    case FD_STDIN:
-      assert(0);
+//   switch(fd){
+//     case FD_STDIN:
+//       assert(0);
+//       return -1;
+//     case FD_STDOUT:
+//     case FD_STDERR:
+//       for(ssize_t i=0;i<len;i++) _putc(buf[i]);
+//       return len;
+//     case FD_FB:
+//       fb_write(buf,file->open_offset,nwrite);
+//       break;
+//     case FD_EVENTS:
+//     case FD_DISPINFO:
+//     case FD_NORMAL:
+//       assert(0);
+//       return -1;
+//     default:
+//       ramdisk_write(buf,file->disk_offset+file->open_offset,nwrite);
+//       break;
+//   }
+
+//   file->open_offset += nwrite;
+//   return nwrite;
+// }
+ssize_t fs_write(int fd, uint8_t *buf, size_t len) {
+  size_t i = 0;
+  size_t size, nwrite;
+  Finfo *fp = &file_table[fd];
+
+  size = fp->size - fp->open_offset;
+  nwrite = len > size ? size : len;
+
+  switch (fd) {
+  case FD_STDOUT:
+  case FD_STDERR:
+    while (i++ < len)
+      _putc(*buf++);
+    return len;
+
+  case FD_FB:
+    fb_write(buf, fp->open_offset, nwrite);
+    break;
+
+  default:
+    if (fd < 6 || fd >= NR_FILES)
       return -1;
-    case FD_STDOUT:
-    case FD_STDERR:
-      for(ssize_t i=0;i<len;i++) _putc(buf[i]);
-      return len;
-    case FD_FB:
-      fb_write(buf,file->open_offset,nwrite);
-      break;
-    case FD_EVENTS:
-    case FD_DISPINFO:
-    case FD_NORMAL:
-      assert(0);
-      return -1;
-    default:
-      ramdisk_write(buf,file->disk_offset+file->open_offset,nwrite);
-      break;
+    ramdisk_write(buf, fp->disk_offset + fp->open_offset, nwrite);
+    break;
   }
-
-  file->open_offset += nwrite;
+  fp->open_offset += nwrite;
   return nwrite;
 }
 
