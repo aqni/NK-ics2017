@@ -21,10 +21,6 @@ void dispinfo_read(void *buf, off_t offset, size_t len) {
 }
 
 void fb_write(const void *buf, off_t offset, size_t len) {
-  if(offset >= _screen.width * _screen.height){
-    assert(0);
-  }
-
   int row, col;
   offset /= 4;
   col = offset % _screen.width;
