@@ -22,7 +22,7 @@ void dispinfo_read(void *buf, off_t offset, size_t len) {
 }
 
 void fb_write(const void *buf, off_t offset, size_t len) {
-  if(offset<_screen.width*_screen.width){
+  if(offset<_screen.width*_screen.height){
     int x=offset%_screen.width,y=offset/_screen.width;
     _draw_rect(buf,x,y,len/4,1);
   }
