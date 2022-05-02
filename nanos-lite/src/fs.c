@@ -22,10 +22,15 @@ static Finfo file_table[] __attribute__((used)) = {
 
 #define NR_FILES (sizeof(file_table) / sizeof(file_table[0]))
 
+// void init_fs() {
+//   // TODO: initialize the size of /dev/fb
+//   file_table[FD_FB].disk_offset=sizeof(uint32_t)*_screen.height*_screen.width;
+//   file_table[FD_FB].open_offset=0;
+// }
 void init_fs() {
   // TODO: initialize the size of /dev/fb
-  file_table[FD_FB].disk_offset=sizeof(uint32_t)*_screen.height*_screen.width;
-  file_table[FD_FB].open_offset=0;
+  file_table[FD_FB].size = _screen.width * _screen.height * sizeof(uint32_t);
+  file_table[FD_FB].open_offset = 0;
 }
 
 // int fs_open(const char *pathname, int flags, int mode){
