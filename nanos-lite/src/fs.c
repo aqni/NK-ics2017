@@ -21,6 +21,7 @@ static Finfo file_table[] __attribute__((used)) = {
 };
 
 #define NR_FILES (sizeof(file_table) / sizeof(file_table[0]))
+
 void init_fs() {
   // TODO: initialize the size of /dev/fb
   file_table[FD_FB].size = _screen.width * _screen.height * sizeof(uint32_t);
@@ -41,6 +42,7 @@ int fs_open(const char *pathname, int flags, int mode){
 #define MYMIN(a,b) ((a)<(b)?(a):(b))
 extern void ramdisk_read(void *buf, off_t offset, size_t len);
 extern void dispinfo_read(void *buf, off_t offset, size_t len);
+extern size_t events_read(void *buf, size_t len);
 ssize_t fs_read(int fd, void *buf, size_t len){
   if(fd<0||fd>=NR_FILES) return -1;
   Finfo* file=&file_table[fd];
@@ -51,9 +53,10 @@ ssize_t fs_read(int fd, void *buf, size_t len){
     case FD_STDOUT:
     case FD_STDERR:
     case FD_FB:
-    case FD_EVENTS:
       assert(0);
       return -1;
+    case FD_EVENTS:
+      return events_read(buf, len);
     case FD_DISPINFO:
       dispinfo_read(buf,file->open_offset,len);
       break;
