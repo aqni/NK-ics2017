@@ -53,6 +53,7 @@ ssize_t fs_read(int fd, void *buf, size_t len){
     case FD_STDERR:
     case FD_FB:
     case FD_EVENTS:
+      assert(0);
       return -1;
     case FD_DISPINFO:
       dispinfo_read(buf,file->open_offset,len);
@@ -77,6 +78,7 @@ ssize_t fs_write(int fd, uint8_t *buf, size_t len){
 
   switch(fd){
     case FD_STDIN:
+      assert(0);
       return -1;
     case FD_STDOUT:
     case FD_STDERR:
@@ -88,6 +90,7 @@ ssize_t fs_write(int fd, uint8_t *buf, size_t len){
     case FD_EVENTS:
     case FD_DISPINFO:
     case FD_NORMAL:
+      assert(0);
       return -1;
     default:
       ramdisk_write(buf,file->disk_offset+file->open_offset,nwrite);
@@ -111,7 +114,6 @@ off_t fs_lseek(int fd, off_t offset,int whence){
 
   if (offset < 0||offset > file->size)
     return -1;
-
 
   return file->open_offset = offset;
 }
