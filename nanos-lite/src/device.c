@@ -21,10 +21,11 @@ void dispinfo_read(void *buf, off_t offset, size_t len) {
 }
 
 void fb_write(const void *buf, off_t offset, size_t len) {
-  // if(offset >= _screen.width * _screen.height){
-  //   assert(0);
-  // }
-  
+  offset /= sizeof(uint32_t);
+  len /= sizeof(uint32_t);
+  if(offset >= _screen.width * _screen.height){
+    assert(0);
+  }
   int x=offset%_screen.width,y=offset/ _screen.width;
   _draw_rect(buf,x,y,len/sizeof(uint32_t),1);
 }
