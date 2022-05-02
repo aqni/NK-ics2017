@@ -54,29 +54,59 @@ int fs_open(const char *pathname, int flags, int mode) {
 #define MYMIN(a,b) ((a)<(b)?(a):(b))
 extern void ramdisk_read(void *buf, off_t offset, size_t len);
 extern void dispinfo_read(void *buf, off_t offset, size_t len);
-ssize_t fs_read(int fd, void *buf, size_t len){
-  if(fd<0||fd>=NR_FILES) return -1;
-  Finfo* file=&file_table[fd];
-  ssize_t nread=MYMIN(len,file->size-file->open_offset);
+// ssize_t fs_read(int fd, void *buf, size_t len){
+//   if(fd<0||fd>=NR_FILES) return -1;
+//   Finfo* file=&file_table[fd];
+//   ssize_t nread=MYMIN(len,file->size-file->open_offset);
 
-  switch(fd){
-    case FD_STDIN:
-    case FD_STDOUT:
-    case FD_STDERR:
-    case FD_FB:
-    case FD_EVENTS:
-      assert(0);
+//   switch(fd){
+//     case FD_STDIN:
+//     case FD_STDOUT:
+//     case FD_STDERR:
+//     case FD_FB:
+//     case FD_EVENTS:
+//       assert(0);
+//       return -1;
+//     case FD_DISPINFO:
+//       dispinfo_read(buf,file->open_offset,len);
+//       break;
+//     case FD_NORMAL:
+//       return -1;
+//     default:
+//       ramdisk_read(buf,file->disk_offset+file->open_offset,nread);
+//       break;
+//   }
+//   file->open_offset += nread;
+//   return nread;
+// }
+
+ssize_t fs_read(int fd, void *buf, size_t len) {
+  ssize_t size, nread;
+  Finfo *fp = &file_table[fd];
+
+  size = fp->size - fp->open_offset;
+  nread = len > size ? size : len;
+
+
+  switch (fd) {
+  case FD_STDOUT:
+  case FD_STDERR:
+    return -1;
+
+  case FD_DISPINFO:
+    dispinfo_read(buf, fp->open_offset, nread);
+    break;
+
+  case FD_EVENTS:
+    // return events_read(buf, len);
+
+  default:
+    if (fd < 6 || fd >= NR_FILES)
       return -1;
-    case FD_DISPINFO:
-      dispinfo_read(buf,file->open_offset,len);
-      break;
-    case FD_NORMAL:
-      return -1;
-    default:
-      ramdisk_read(buf,file->disk_offset+file->open_offset,nread);
-      break;
+    ramdisk_read(buf, fp->disk_offset + fp->open_offset, nread);
+    break;
   }
-  file->open_offset += nread;
+  fp->open_offset += nread;
   return nread;
 }
 
