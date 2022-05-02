@@ -42,7 +42,6 @@ int fs_open(const char *pathname, int flags, int mode){
 #define MYMIN(a,b) ((a)<(b)?(a):(b))
 extern void ramdisk_read(void *buf, off_t offset, size_t len);
 extern void dispinfo_read(void *buf, off_t offset, size_t len);
-
 ssize_t fs_read(int fd, void *buf, size_t len){
   if(fd<0||fd>=NR_FILES) return -1;
   Finfo* file=&file_table[fd];
@@ -72,7 +71,7 @@ ssize_t fs_read(int fd, void *buf, size_t len){
 extern void ramdisk_write(const void *buf, off_t offset, size_t len);
 extern void fb_write(const void *buf, off_t offset, size_t len);
 
-ssize_t fs_write(int fd, uint8_t *buf, size_t len){
+ssize_t fs_write(int fd, uint8_t *buf, size_t len) {
   size_t i = 0;
   size_t size, nwrite;
   Finfo *fp = &file_table[fd];
