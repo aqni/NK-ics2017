@@ -3,7 +3,6 @@
 #include <ndl.h>
 #include <stdio.h>
 int main() {
-  return 0;
   printf("line pass:%d\n",__LINE__);
   NDL_Bitmap *bmp = (NDL_Bitmap*)malloc(sizeof(NDL_Bitmap));
   printf("line pass:%d\n",__LINE__);
