@@ -24,6 +24,8 @@ static Finfo file_table[] __attribute__((used)) = {
 
 void init_fs() {
   // TODO: initialize the size of /dev/fb
+  file_table[FD_FB].disk_offset=sizeof(uint32_t)*_screen.height*_screen.width;
+  file_table[FD_FB].open_offset=0;
 }
 
 int fs_open(const char *pathname, int flags, int mode){
@@ -39,6 +41,7 @@ int fs_open(const char *pathname, int flags, int mode){
 
 #define MYMIN(a,b) ((a)<(b)?(a):(b))
 extern void ramdisk_read(void *buf, off_t offset, size_t len);
+extern void dispinfo_read(void *buf, off_t offset, size_t len);
 ssize_t fs_read(int fd, void *buf, size_t len){
   if(fd<0||fd>=NR_FILES) return -1;
   Finfo* file=&file_table[fd];
@@ -50,7 +53,10 @@ ssize_t fs_read(int fd, void *buf, size_t len){
     case FD_STDERR:
     case FD_FB:
     case FD_EVENTS:
+      return -1;
     case FD_DISPINFO:
+      dispinfo_read(buf,file->open_offset,len);
+      break;
     case FD_NORMAL:
       return -1;
     default:
@@ -62,6 +68,8 @@ ssize_t fs_read(int fd, void *buf, size_t len){
 }
 
 extern void ramdisk_write(const void *buf, off_t offset, size_t len);
+extern void fb_write(const void *buf, off_t offset, size_t len);
+
 ssize_t fs_write(int fd, uint8_t *buf, size_t len){
   if(fd<0||fd>=NR_FILES) return -1;
   Finfo* file=&file_table[fd];
@@ -75,6 +83,8 @@ ssize_t fs_write(int fd, uint8_t *buf, size_t len){
       for(ssize_t i=0;i<len;i++) _putc(buf[i]);
       return len;
     case FD_FB:
+      fb_write(buf,file->open_offset,nwrite);
+      break;
     case FD_EVENTS:
     case FD_DISPINFO:
     case FD_NORMAL:
