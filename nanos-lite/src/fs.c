@@ -62,27 +62,15 @@ void init_fs() {
   file_table[FD_FB].open_offset = 0;
 }
 
-// int fs_open(const char *pathname, int flags, int mode){
-//   for(int fd=0;fd< NR_FILES;fd++){
-//     if(0==strcmp(pathname, file_table[fd].name)){
-//       file_table[fd].open_offset=0;
-//       return fd;
-//     }
-//   }
-//   assert(0);
-//   return -1;
-// }
-
-int fs_open(const char *pathname, int flags, int mode) {
-  (void)flags; (void)mode; /* UNUSED */
-  int fd;
-  for (fd = 0; fd < NR_FILES; fd++)
-    if (strcmp(pathname, file_table[fd].name) == 0)
-      break;
-  assert(fd != NR_FILES);
-  file_table[fd].open_offset = 0;
-
-  return fd;
+int fs_open(const char *pathname, int flags, int mode){
+  for(int fd=0;fd< NR_FILES;fd++){
+    if(0==strcmp(pathname, file_table[fd].name)){
+      file_table[fd].open_offset=0;
+      return fd;
+    }
+  }
+  assert(0);
+  return -1;
 }
 
 #define MYMIN(a,b) ((a)<(b)?(a):(b))
