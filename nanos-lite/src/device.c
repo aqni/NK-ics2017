@@ -11,11 +11,12 @@ static const char *keyname[256] __attribute__((used)) = {
 size_t events_read(void *buf, size_t len) {
   // int key_code;
   int keyinput=_read_key();
-  if(keyinput==_KEY_NONE){
+  Log("key:%d",keyinput);
+  if(keyinput == _KEY_NONE){
     // time event
     snprintf(buf, len, "t %d\n", _uptime());
   }else if(keyinput & 0x8000){
-        // key down event
+    // key down event
     keyinput &= ~0x8000;
     snprintf(buf, len, "kd %s\n", keyname[keyinput]);
   }else{

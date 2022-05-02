@@ -43,6 +43,7 @@ int fs_open(const char *pathname, int flags, int mode){
 extern void ramdisk_read(void *buf, off_t offset, size_t len);
 extern void dispinfo_read(void *buf, off_t offset, size_t len);
 extern size_t events_read(void *buf, size_t len);
+
 ssize_t fs_read(int fd, void *buf, size_t len){
   if(fd<0||fd>=NR_FILES) return -1;
   Finfo* file=&file_table[fd];
