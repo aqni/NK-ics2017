@@ -28,15 +28,27 @@ void init_fs() {
   file_table[FD_FB].open_offset=0;
 }
 
-int fs_open(const char *pathname, int flags, int mode){
-  for(int fd=0;fd< NR_FILES;fd++){
-    if(0==strcmp(pathname, file_table[fd].name)){
-      file_table[fd].open_offset=0;
-      return fd;
-    }
-  }
-  assert(0);
-  return -1;
+// int fs_open(const char *pathname, int flags, int mode){
+//   for(int fd=0;fd< NR_FILES;fd++){
+//     if(0==strcmp(pathname, file_table[fd].name)){
+//       file_table[fd].open_offset=0;
+//       return fd;
+//     }
+//   }
+//   assert(0);
+//   return -1;
+// }
+
+int fs_open(const char *pathname, int flags, int mode) {
+  (void)flags; (void)mode; /* UNUSED */
+  int fd;
+  for (fd = 0; fd < NR_FILES; fd++)
+    if (strcmp(pathname, file_table[fd].name) == 0)
+      break;
+  assert(fd != NR_FILES);
+  file_table[fd].open_offset = 0;
+
+  return fd;
 }
 
 #define MYMIN(a,b) ((a)<(b)?(a):(b))
@@ -100,6 +112,23 @@ ssize_t fs_write(int fd, uint8_t *buf, size_t len){
   file->open_offset += nwrite;
   return nwrite;
 }
+
+// off_t fs_lseek(int fd, off_t offset,int whence){
+//   if( fd<0 || fd >=NR_FILES) return -1;
+//   Finfo* file=&file_table[fd];
+
+//   switch(whence){
+//     case SEEK_SET: break;
+//     case SEEK_CUR: offset += file->open_offset; break;
+//     case SEEK_END: offset += file->size; break;
+//     default:return -1;
+//   }
+
+//   if (offset < 0||offset > file->size)
+//     return -1;
+
+//   return file->open_offset = offset;
+// }
 
 off_t fs_lseek(int fd, off_t offset,int whence) {
   Finfo *fp = &file_table[fd];
