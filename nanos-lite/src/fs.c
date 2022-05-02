@@ -205,49 +205,27 @@ ssize_t fs_write(int fd, uint8_t *buf, size_t len) {
   return nwrite;
 }
 
-// off_t fs_lseek(int fd, off_t offset,int whence){
-//   if( fd<0 || fd >=NR_FILES) return -1;
-//   Finfo* file=&file_table[fd];
+off_t fs_lseek(int fd, off_t offset,int whence){
+  if( fd<0 || fd >=NR_FILES) return -1;
+  Finfo* file=&file_table[fd];
 
-//   switch(whence){
-//     case SEEK_SET: break;
-//     case SEEK_CUR: offset += file->open_offset; break;
-//     case SEEK_END: offset += file->size; break;
-//     default:return -1;
-//   }
-
-//   if (offset < 0||offset > file->size)
-//     return -1;
-
-//   return file->open_offset = offset;
-// }
-
-off_t fs_lseek(int fd, off_t offset,int whence) {
-  Finfo *fp = &file_table[fd];
-
-  assert(fd < NR_FILES);
-
-  switch (whence) {
-  case SEEK_END: offset = fp->size + offset; break;
-  case SEEK_CUR: offset = fp->open_offset + offset; break;
-  case SEEK_SET: break;
-  default: return -1;
+  switch(whence){
+    case SEEK_SET: break;
+    case SEEK_CUR: offset += file->open_offset; break;
+    case SEEK_END: offset += file->size; break;
+    default:return -1;
   }
 
-  if (offset > fp->size || offset < 0)
+  if (offset < 0||offset > file->size)
     return -1;
 
-  return fp->open_offset = offset;
+  return file->open_offset = offset;
 }
-
 
 int fs_close(int fd){
   return 0;
 }
 
-// size_t fs_filesz(int fd){
-//   return file_table[fd].size;
-// }
-size_t fs_filesz(int fd) {
+size_t fs_filesz(int fd){
   return file_table[fd].size;
 }
