@@ -17,8 +17,8 @@ static char dispinfo[128] __attribute__((used));
 #define MYMIN(a,b) ((a)<(b)?(a):(b))
 
 void dispinfo_read(void *buf, off_t offset, size_t len) {
-  int nread=MYMIN(len,sizeof(dispinfo)/sizeof(dispinfo[0])-offset);
-  memcpy(buf, dispinfo + offset, nread);
+  //int nread=MYMIN(len,sizeof(dispinfo)/sizeof(dispinfo[0])-offset);
+  memcpy(buf, dispinfo + offset, len);
 }
 
 void fb_write(const void *buf, off_t offset, size_t len) {
