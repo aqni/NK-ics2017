@@ -12,7 +12,6 @@ extern int _read_key();
 size_t events_read(void *buf, size_t len) {
   // int key_code;
   int keyinput=_read_key();
-  Log("key:%d",keyinput);
   if(keyinput == _KEY_NONE){
     // time event
     snprintf(buf, len, "t %d\n", _uptime());
