@@ -62,7 +62,6 @@ ssize_t fs_read(int fd, void *buf, size_t len){
       dispinfo_read(buf,file->open_offset,len);
       break;
     case FD_NORMAL:
-      return -1;
     default:
       ramdisk_read(buf,file->disk_offset+file->open_offset,nread);
       break;
