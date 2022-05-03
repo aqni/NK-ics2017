@@ -29,7 +29,7 @@ int main() {
 #endif
 
   init_fs();
-  const char path[]="/bin/events";
+  const char path[]="/bin/pal";
   uint32_t entry = loader(NULL,path);
   Log("load '%s' successfully.",path);
   ((void (*)(void))entry)();
