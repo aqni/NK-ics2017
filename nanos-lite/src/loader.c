@@ -13,11 +13,11 @@ uintptr_t loader(_Protect *as, const char *filename) {
     void *pa =new_page();
     _map(as,va,pa);
     int read_len= len > PGSIZE ? PGSIZE:len;
-    read_len=fs_read(fd,va,read_len);
+    read_len=fs_read(fd,pa,read_len);
     va += read_len;
     len -= read_len;
   }
-  
+
   fs_close(fd);
   return (uintptr_t)DEFAULT_ENTRY;
 }
