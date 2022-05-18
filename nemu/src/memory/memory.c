@@ -42,6 +42,8 @@ paddr_t page_translate(vaddr_t addr,bool write) {
     return addr;
   }
 
+  Log("cpu.cr0:%x",cpu.cr0.val);
+
   Log("access va:%x",addr);
   
   /* 访问页目录表 */
