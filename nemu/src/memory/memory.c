@@ -47,9 +47,10 @@ paddr_t page_translate(vaddr_t addr,bool write) {
   Log("access va:%x",addr);
   
   /* 访问页目录表 */
-  PDE *pdir=(PDE*)(cpu.cr3.page_directory_base << 12);
+  PDE *pdir=(PDE*)(((uint32_t)cpu.cr3.page_directory_base) << 12);
   PDE pde;
   intptr_t ppde=(intptr_t)&pdir[addr >> 22];
+  Log("pdx:%x",addr >> 22);
   pde.val=paddr_read(ppde,sizeof(PDE));
   assert(pde.present);
   pde.accessed=true;
