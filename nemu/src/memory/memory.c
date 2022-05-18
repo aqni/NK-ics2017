@@ -99,7 +99,15 @@ paddr_t page_translate(vaddr_t addr,bool write) {
 uint32_t vaddr_read(vaddr_t addr, int len) {
     if (cross_page(addr,len)) {
         /* this is a special case, you can handle it later. */
-        Assert(0,"vaddr_read cross_page");
+            union {
+        uint8_t bytes[4];
+        uint32_t dword;
+      } data = {0};
+      for (int i = 0; i < len; i++) {
+        paddr_t paddr = page_translate(addr + i, false);
+        data.bytes[i] = (uint8_t)paddr_read(paddr, 1);
+      }
+      return data.dword;
     }
     else {
         paddr_t paddr = page_translate(addr,false);
