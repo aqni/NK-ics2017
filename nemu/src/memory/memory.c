@@ -70,7 +70,7 @@ paddr_t page_translate(vaddr_t addr,bool write) {
 uint32_t vaddr_read(vaddr_t addr, int len) {
     if (cross_page(addr,len)) {
         /* this is a special case, you can handle it later. */
-        assert(0);
+        Assert(0,"vaddr_read cross_page");
     }
     else {
         paddr_t paddr = page_translate(addr,false);
@@ -82,7 +82,7 @@ uint32_t vaddr_read(vaddr_t addr, int len) {
 void vaddr_write(vaddr_t addr, int len, uint32_t data) {
   if (cross_page(addr, len)) {
     /* data cross the page boundary */
-    assert(0);
+    Assert(0,"vaddr_write cross_page");
   } else {
     paddr_t paddr = page_translate(addr,true);
     paddr_write(paddr, len, data);
