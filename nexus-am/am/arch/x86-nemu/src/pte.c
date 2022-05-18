@@ -17,7 +17,7 @@ void _pte_init(void* (*palloc)(), void (*pfree)(void*)) {
   palloc_f = palloc;
   pfree_f = pfree;
 
-  int i;
+  register int i;
 
   // make all PDEs invalid
   for (i = 0; i < NR_PDE; i ++) {
