@@ -30,6 +30,8 @@ int main() {
 
   init_fs();
 
+  Log("start to load img.");
+
   extern void load_prog(const char *filename);
   load_prog("/bin/dummy");
 

@@ -11,7 +11,6 @@ uintptr_t loader(_Protect *as, const char *filename) {
 
   while(len>0){
     void *pa =new_page();
-    Log("new_page addr:#x",(int)pa);
     _map(as,va,pa);
     int read_len= len > PGSIZE ? PGSIZE:len;
     read_len=fs_read(fd,va,read_len);
