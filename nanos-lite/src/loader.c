@@ -9,13 +9,20 @@ uintptr_t loader(_Protect *as, const char *filename) {
   size_t len=fs_filesz(fd);
   void *va = DEFAULT_ENTRY;
 
-  while(len>0){
-    void *pa =new_page();
-    _map(as,va,pa);
-    int read_len= len > PGSIZE ? PGSIZE:len;
-    read_len=fs_read(fd,pa,read_len);
-    va += read_len;
-    len -= read_len;
+  // while(len>0){
+  //   void *pa =new_page();
+  //   _map(as,va,pa);
+  //   int read_len= len > PGSIZE ? PGSIZE:len;
+  //   read_len=fs_read(fd,va,read_len);
+  //   va += read_len;
+  //   len -= read_len;
+  // }
+
+  void *end = DEFAULT_ENTRY + len;
+  for (va = DEFAULT_ENTRY; va < end; va += PGSIZE) {
+    void *pa = new_page();
+    _map(as, va, pa);
+    fs_read(fd, pa, (end - va) < PGSIZE ? (end - va) : PGSIZE);
   }
 
   fs_close(fd);
