@@ -5,9 +5,9 @@
 #define DEFAULT_ENTRY ((void *)0x8048000)
 
 uintptr_t loader(_Protect *as, const char *filename) {
-  // int fd = fs_open(filename,0,0);
-  // size_t len=fs_filesz(fd);
-  // uint8_t *va = DEFAULT_ENTRY;
+  int fd = fs_open(filename,0,0);
+  size_t len=fs_filesz(fd);
+  void *va = DEFAULT_ENTRY;
 
   // while(len>0){
   //   void *pa =new_page();
@@ -18,21 +18,13 @@ uintptr_t loader(_Protect *as, const char *filename) {
   //   len -= read_len;
   // }
 
-  // fs_close(fd);
-  // return (uintptr_t)DEFAULT_ENTRY;
-    int fd = fs_open(filename, 0, 0);
-  size_t nbyte = fs_filesz(fd);
-  void *pa;
-  void *va;
-
-  Log("loaded: [%d]%s size:%d", fd, filename, nbyte);
-
-  void *end = DEFAULT_ENTRY + nbyte;
+  void *end = DEFAULT_ENTRY + len;
   for (va = DEFAULT_ENTRY; va < end; va += PGSIZE) {
-    pa = new_page();
+    void *pa = new_page();
     _map(as, va, pa);
     fs_read(fd, pa, (end - va) < PGSIZE ? (end - va) : PGSIZE);
   }
 
+  fs_close(fd);
   return (uintptr_t)DEFAULT_ENTRY;
 }
