@@ -42,18 +42,18 @@ paddr_t page_translate(vaddr_t addr,bool write) {
     return addr;
   }
 
-  Log("cpu.cr0:%x",cpu.cr0.val);
+  // Log("cpu.cr0:%x",cpu.cr0.val);
 
-  Log("access va:%x",addr);
+  // Log("access va:%x",addr);
   
   /* 访问页目录表 */
   PDE *pdir=(PDE*)(((uint32_t)cpu.cr3.page_directory_base) << 12);
   PDE pde;
   intptr_t ppde=(intptr_t)&pdir[addr >> 22];
-  Log("pdx:%x",addr >> 22);
+  // Log("pdx:%x",addr >> 22);
   pde.val=paddr_read(ppde,sizeof(PDE));
-  Log("pde:%x",pde.val);
-  Log("pde.present:%x",pde.present);
+  // Log("pde:%x",pde.val);
+  // Log("pde.present:%x",pde.present);
   assert(pde.present);
   pde.accessed=true;
   
@@ -61,7 +61,7 @@ paddr_t page_translate(vaddr_t addr,bool write) {
   PTE *ptab=(PTE*)(pde.page_frame << 12);
   PTE pte;
   intptr_t ppte=(intptr_t)&ptab[(addr<<10) >> 22];
-  Log("ptx:%x",(addr<<10) >> 12);
+  // Log("ptx:%x",(addr<<10) >> 12);
   pte.val=paddr_read(ppte, sizeof(PTE));
   assert(pte.present);
   pte.accessed = true;
