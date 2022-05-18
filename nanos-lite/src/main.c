@@ -2,7 +2,7 @@
 
 /* Uncomment these macros to enable corresponding functionality. */
 #define HAS_ASYE
-//#define HAS_PTE
+#define HAS_PTE
 
 void init_mm(void);
 void init_ramdisk(void);
@@ -29,7 +29,7 @@ int main() {
 #endif
 
   init_fs();
-  const char path[]="/bin/pal";
+  const char path[]="/bin/hello";
   uint32_t entry = loader(NULL,path);
   Log("load '%s' successfully.",path);
   ((void (*)(void))entry)();
