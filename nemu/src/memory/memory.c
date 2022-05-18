@@ -38,7 +38,7 @@ static inline bool cross_page(vaddr_t addr, int len){
 
 paddr_t page_translate(vaddr_t addr,bool write) {
   /* if 没有开启分页机制 */
-  if(!(cpu.cr0.protect_enable && cpu.cr0.paging)){
+  if(!(cpu.cr0.paging)){
     return addr;
   }
 
