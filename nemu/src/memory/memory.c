@@ -53,6 +53,7 @@ paddr_t page_translate(vaddr_t addr,bool write) {
   Log("pdx:%x",addr >> 22);
   pde.val=paddr_read(ppde,sizeof(PDE));
   Log("pde:%x",pde.val);
+  Log("pde.present:%x",pde.present);
   assert(pde.present);
   pde.accessed=true;
   
