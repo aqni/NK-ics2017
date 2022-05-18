@@ -17,7 +17,7 @@ void _pte_init(void* (*palloc)(), void (*pfree)(void*)) {
   palloc_f = palloc;
   pfree_f = pfree;
 
-  register int i;
+  int i;
 
   // make all PDEs invalid
   for (i = 0; i < NR_PDE; i ++) {
@@ -42,8 +42,8 @@ void _pte_init(void* (*palloc)(), void (*pfree)(void*)) {
     }
   }
 
-  set_cr3(kpdirs);
-  set_cr0(get_cr0() | CR0_PG);
+  // set_cr3(kpdirs);
+  // set_cr0(get_cr0() | CR0_PG);
 }
 
 void _protect(_Protect *p) {
