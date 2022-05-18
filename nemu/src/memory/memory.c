@@ -61,6 +61,7 @@ paddr_t page_translate(vaddr_t addr,bool write) {
   PTE *ptab=(PTE*)(pde.page_frame << 12);
   PTE pte;
   intptr_t ppte=(intptr_t)&ptab[(addr<<10) >> 12];
+  Log("ptx:%x",(addr<<10) >> 12);
   pte.val=paddr_read(ppte, sizeof(PTE));
   assert(pte.present);
   pte.accessed = true;
