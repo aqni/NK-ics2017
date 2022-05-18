@@ -29,10 +29,9 @@ int main() {
 #endif
 
   init_fs();
-  const char path[]="/bin/hello";
-  uint32_t entry = loader(NULL,path);
-  Log("load '%s' successfully.",path);
-  ((void (*)(void))entry)();
+
+  extern void load_prog(const char *filename);
+  load_prog("/bin/dummy");
 
   panic("Should not reach here");
 }
