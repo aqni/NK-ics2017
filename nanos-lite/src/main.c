@@ -32,7 +32,7 @@ int main() {
   init_fs();
 
   Log("start to load img.");
-  load_prog("/bin/dummy");
+  load_prog("/bin/pal");
 
   panic("Should not reach here");
 }
