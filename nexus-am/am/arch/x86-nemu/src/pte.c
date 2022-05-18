@@ -66,18 +66,34 @@ void _switch(_Protect *p) {
 }
 
 void _map(_Protect *p, void *va, void *pa) {
-  PDE *pdir=p->ptr;
-  PDE *pde=&pdir[PDX(va)];
+  // PDE *pdir=p->ptr;
+  // PDE *pde=&pdir[PDX(va)];
 
-  if(!(*pde & PTE_P)){
-    PTE *pg=(PTE *)palloc_f();
-    for (int i = 0; i < NR_PTE; i++) pg[i] = 0;
-    *pde=PTE_ADDR(pg) | PTE_P;
+  // if(!(*pde & PTE_P)){
+  //   PTE *pg=(PTE *)palloc_f();
+  //   for (int i = 0; i < NR_PTE; i++) pg[i] = 0;
+  //   *pde=PTE_ADDR(pg) | PTE_P;
+  // }
+
+  // PTE *ptab= (PTE*)PTE_ADDR(*pde);
+  // PTE *pte=&ptab[PTX(va)];
+  // *pte=PTE_ADDR(pa) | PTE_P;
+
+
+  PDE *pde, *pgdir = p->ptr;
+  PTE *pgtab;
+
+  pde = &pgdir[PDX(va)];
+  if (*pde & PTE_P) {
+    pgtab = (PTE *)PTE_ADDR(*pde);
+  } else {
+    pgtab = (PTE *)palloc_f();
+    for (int i = 0; i < NR_PTE; i ++) {
+      pgtab[i] = 0;
+    }
+    *pde = PTE_ADDR(pgtab) | PTE_P;
   }
-
-  PTE *ptab= (PTE*)PTE_ADDR(*pde);
-  PTE *pte=&ptab[PTX(va)];
-  *pte=PTE_ADDR(pa) | PTE_P;
+  pgtab[PTX(va)] = PTE_ADDR(pa) | PTE_P;
 }
 
 void _unmap(_Protect *p, void *va) {
