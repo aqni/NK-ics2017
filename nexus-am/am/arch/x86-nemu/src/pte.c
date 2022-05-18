@@ -72,7 +72,7 @@ void _map(_Protect *p, void *va, void *pa) {
   if(!(*pde & PTE_P)){
     PTE *pg=(PTE *)palloc_f();
     for (int i = 0; i < NR_PTE; i++) pg[i] = 0;
-    *pde=PTE_ADDR(pg)|PTE_P;
+    *pde=PTE_ADDR(pg) | PTE_P;
   }
 
   PTE *ptab= (PTE*)PTE_ADDR(*pde);

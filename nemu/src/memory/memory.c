@@ -41,6 +41,8 @@ paddr_t page_translate(vaddr_t addr,bool write) {
   if(!(cpu.cr0.protect_enable && cpu.cr0.paging)){
     return addr;
   }
+
+  Log("access va:%x",addr);
   
   /* 访问页目录表 */
   PDE *pdir=(PDE*)(cpu.cr3.page_directory_base << 12);
