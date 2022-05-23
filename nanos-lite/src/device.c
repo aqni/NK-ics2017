@@ -19,6 +19,10 @@ size_t events_read(void *buf, size_t len) {
     // key down event
     keyinput &= ~0x8000;
     snprintf(buf, len, "kd %s\n", keyname[keyinput]);
+
+    extern void change_game();
+    if (keyinput == _KEY_F12)
+      change_game();
   }else{
     // key up event
     snprintf(buf, len, "ku %s\n", keyname[keyinput]);
