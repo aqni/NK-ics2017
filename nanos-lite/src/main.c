@@ -34,5 +34,7 @@ int main() {
   Log("start to load img.");
   load_prog("/bin/pal");
 
+  _trap();
+
   panic("Should not reach here");
 }
