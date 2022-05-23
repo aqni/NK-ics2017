@@ -33,6 +33,7 @@ int main() {
 
   Log("start to load img.");
   load_prog("/bin/pal");
+  load_prog("/bin/hello");
 
   _trap();
 

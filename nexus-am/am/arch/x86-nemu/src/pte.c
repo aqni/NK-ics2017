@@ -83,6 +83,42 @@ void _map(_Protect *p, void *va, void *pa) {
 void _unmap(_Protect *p, void *va) {
 }
 
+// ustack的底部初始化一个以entry为返回地址的陷阱帧.
+// 我们还需要在陷阱帧之前设置好_start()函数的栈帧,
+// 这是为了_start()开始执行的时候, 可以访问到正确的栈帧.
+// 我们只需要把这一栈帧中的参数设置为0或NULL即可, 至于返回地址,
+// 我们永远不会从_start()返回, 因此可以不设置它.
+
+// |               |
+// +---------------+ <---- ustack.end
+// |  stack frame  |
+// |   of _start() |
+// +---------------+
+// |               |
+// |   trap frame  |
+// |               |
+// +---------------+ <--+
+// |               |    |
+// |               |    |
+// |               |    |
+// |               |    |
+// +---------------+    |
+// |       tf      | ---+
+// +---------------+ <---- ustack.start
+// |               |
+
 _RegSet *_umake(_Protect *p, _Area ustack, _Area kstack, void *entry, char *const argv[], char *const envp[]) {
-  return NULL;
+  _RegSet *tf = *(_RegSet **)(ustack.start);
+
+  // stack frame of _start() 设置三个空参数，忽略返回值
+  uint32_t *stack = (uint32_t *)(ustack.end - 4 - 12);
+  for (int i = 0; i < 3; i++) stack[i]=0;
+
+  // 设置tf
+  tf = (void *)(stack - sizeof(_RegSet));
+  tf->eflags = 0x2;
+  tf->cs = 8;
+  tf->eip = (uintptr_t)entry;  // 为了保证differential testing的正确运行,
+
+  return tf;
 }
