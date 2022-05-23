@@ -15,12 +15,15 @@ void raise_intr(uint8_t NO, vaddr_t ret_addr) {
     | (((uint32_t)(desc.offset_31_16))<<16);
   
   rtl_push(&cpu.eflags.reg);
+  rtl_set_IF(&tzero);
   t2=cpu.cs;
   rtl_push(&t2);
   rtl_push(&ret_addr);
+
  
 
 }
 
 void dev_raise_intr() {
+  cpu.INTR=true;
 }

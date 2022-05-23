@@ -116,7 +116,7 @@ _RegSet *_umake(_Protect *p, _Area ustack, _Area kstack, void *entry, char *cons
 
   // 设置tf
   tf = (void *)(stack - sizeof(_RegSet));
-  tf->eflags = 0x2;
+  tf->eflags = 0x2|(1<<9); //set IF =1 
   tf->cs = 8;
   tf->eip = (uintptr_t)entry;  // 为了保证differential testing的正确运行,
 
