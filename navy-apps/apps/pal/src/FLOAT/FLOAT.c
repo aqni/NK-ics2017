@@ -10,7 +10,15 @@ FLOAT F_mul_F(FLOAT a, FLOAT b) {
 }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
-  return (a/b)<<16;
+  int high32=a >> 16;
+  unsigned low32 =  ((unsigned)a) << 16;
+  FLOAT result;
+  asm volatile (
+    "idiv %2" 
+    : "=a"(result)
+    : "r"(b), "a"(low32), "d"(high32)
+  );
+  return result;
 }
 
 FLOAT f2F(float a) {
