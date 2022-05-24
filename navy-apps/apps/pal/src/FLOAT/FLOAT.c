@@ -3,13 +3,11 @@
 #include <assert.h>
 
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
-  assert(0);
-  return 0;
+  return ((long long)a*(long long)b)>>16;
 }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
-  assert(0);
-  return 0;
+  return (a/b)<<16;
 }
 
 FLOAT f2F(float a) {
@@ -22,14 +20,27 @@ FLOAT f2F(float a) {
    * stack. How do you retrieve it to another variable without
    * performing arithmetic operations on it directly?
    */
+  struct{
+    uint32_t fraction:23;
+    uint32_t exponent:8;
+    uint32_t sign:1;
+  } *pfl=&a;
+  
+  int fraction=pfl->fraction;
 
-  assert(0);
-  return 0;
+  if(pfl->exponent==0) 
+    return 0;
+  else if (pfl->exponent==0xFF) 
+    return pfl->sign?-0x7FFFFFFF:0x7FFFFFFF;
+
+  int exponent=pfl->exponent-127-16;
+  int temp= (exponent>=0)?((pfl->fraction)<<exponent):((pfl->fraction)>>-exponent);
+  return pfl->sign?-temp:temp;
+
 }
 
 FLOAT Fabs(FLOAT a) {
-  assert(0);
-  return 0;
+  return a>0?a:-a;
 }
 
 /* Functions below are already implemented */
