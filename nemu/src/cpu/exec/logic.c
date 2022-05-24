@@ -71,6 +71,7 @@ make_EHelper(shr) {
   print_asm_template2(shr);
 }
 
+
 make_EHelper(setcc) {
   uint8_t subcode = decoding.opcode & 0xf;
   rtl_setcc(&t2, subcode);

@@ -3,7 +3,10 @@
 #include <assert.h>
 
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
-  return ((long long)a*(long long)b)>>16;
+  long long temp=(long long)a*(long long)b;
+  int high32=temp>>32;
+  unsigned low32=temp;
+  return (high32<<16)|(low32>>16);
 }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
