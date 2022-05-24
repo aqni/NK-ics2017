@@ -37,7 +37,7 @@ _RegSet* schedule(_RegSet *prev) {
 
   // always select pcb[0] as the new process
   static unsigned int count=0;
-  current = (count++%10 == 0 ? &pcb[1] : current_game);
+  current = (count++%100 == 0 ? &pcb[1] : current_game);
 
   // TODO: switch to the new address space,
   // then return the new context
