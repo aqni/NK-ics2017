@@ -12,10 +12,10 @@ FLOAT F_mul_F(FLOAT a, FLOAT b) {
 FLOAT F_div_F(FLOAT a, FLOAT b) {
   int high32=a >> 16;
   unsigned low32 =  ((unsigned)a) << 16;
-  FLOAT result;
+  FLOAT result,temp;
   asm volatile (
     "idiv %2" 
-    : "=a"(result)
+    : "=a"(result),"=d"(temp)
     : "r"(b), "a"(low32), "d"(high32)
   );
   return result;
